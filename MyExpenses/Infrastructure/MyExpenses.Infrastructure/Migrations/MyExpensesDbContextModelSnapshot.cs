@@ -576,6 +576,10 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("FromUserId")
                         .HasColumnType("integer");
 
@@ -656,6 +660,9 @@ namespace MyExpenses.Infrastructure.Migrations
                         .HasColumnType("character varying(256)");
 
                     b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsGoogleLoggedIn")
                         .HasColumnType("boolean");
 
                     b.Property<bool>("LockoutEnabled")

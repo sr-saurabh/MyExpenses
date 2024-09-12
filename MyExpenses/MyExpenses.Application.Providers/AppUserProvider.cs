@@ -41,7 +41,7 @@ namespace MyExpenses.Application.Providers
         /// <param name="email">The email address of the user.</param>
         /// <returns>The registered <see cref="CreateAppUser"/> object.</returns>
         /// <exception cref="Exception">Thrown when the user profile already exists.</exception>
-        public async Task<CreateAppUser> RegisterAppUser(CreateAppUser user, string email)
+        public async Task<CreateAppUser> RegisterAppUser(CreateAppUser user, string email, Guid? guid = null)
         {
             try
             {
@@ -71,6 +71,8 @@ namespace MyExpenses.Application.Providers
         public async Task<ApiAppUser> GetCurrentAppUser(Guid userId)
         {
             var user = _appUserRepo.Search(u => u.UserId == userId).SingleOrDefault();
+            if (user == null)
+                return null;
             return _mapper.Map<ApiAppUser>(user);
         }
 
@@ -120,7 +122,7 @@ namespace MyExpenses.Application.Providers
         /// <returns>The ID of the deleted user.</returns>
         public async Task<bool> DeleteUser(int id)
         {
-            bool res= await _appUserRepo.DeleteAsync(id);
+            bool res = await _appUserRepo.DeleteAsync(id);
             return res;
         }
 

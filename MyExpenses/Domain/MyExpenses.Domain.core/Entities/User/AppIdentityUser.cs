@@ -18,6 +18,10 @@ namespace MyExpenses.Domain.core.Entities.User
         /// Gets or sets the date and time when the user was created.
         /// </summary>
         public DateTime CreatedOn { get; set; }
+        /// <summary>
+        /// Gets or sets that the user have used google for authentication
+        /// </summary>
+        public bool IsGoogleLoggedIn { get; set; }
     }
 
     /// <summary>

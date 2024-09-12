@@ -117,7 +117,7 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories.BaseRepo
             var entity = await GetByIdAsync(id);
             if (entity == null)
                 throw new KeyNotFoundException($"Entity with id {id} not found.");
-           var res= await DeleteAsync(entity);
+            var res = await DeleteAsync(entity);
             return res != null;
         }
 
@@ -140,7 +140,8 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories.BaseRepo
         private T SetCreateAuditFields(T entity)
         {
             entity.CreatedOn = DateTime.UtcNow;
-            entity.CreatedBy = _authHelper.GetCurrentUserId();
+            if (entity.CreatedBy == null)
+                entity.CreatedBy = _authHelper.GetCurrentUserId();
             return entity;
         }
 

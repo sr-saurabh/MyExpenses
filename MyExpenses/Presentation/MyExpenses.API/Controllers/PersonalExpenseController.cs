@@ -108,5 +108,18 @@ namespace MyExpenses.API.Controllers
             var result = await _personalExpenseContract.DeletePersonalExpense(expenseId);
             return Ok(result);
         }
+
+        /// <summary>
+        /// Fetch all the categories
+        /// </summary>
+        /// <param name="appUserId"></param>
+        /// <returns></returns>
+
+        [HttpGet("categories/{appUserId}")]
+        public async Task<IActionResult> GetCategories(int appUserId)
+        {
+            var res=await _personalExpenseContract.GetCategories(appUserId);
+            return Ok(res);
+        }
     }
 }

@@ -48,5 +48,13 @@ namespace MyExpenses.API.Controllers
             var result = await _authContract.Login(loginUser);
             return Ok(result);
         }
+
+        [HttpPost]
+        [Route("login-with-google")]
+        public async Task<IActionResult> LoginWithGoogle(GoogleLogin credentials)
+        {
+            var res= await _authContract.LoginWithGoogle(credentials);
+            return Ok(res);
+        }
     }
 }

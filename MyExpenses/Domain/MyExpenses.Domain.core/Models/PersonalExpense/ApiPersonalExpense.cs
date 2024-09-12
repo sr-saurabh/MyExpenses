@@ -18,7 +18,7 @@ namespace MyExpenses.Domain.core.Models.PersonalExpense
 
 
         //PersonalExpense Entity
-        public TransactionType Type { get; set; }
+        public string Type { get; set; }
 
     }
     public class ApiPersonalExpenseWithSummary

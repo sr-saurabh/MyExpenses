@@ -28,7 +28,7 @@ namespace MyExpenses.Application.Abstraction
         /// <param name="user">The user details to register.</param>
         /// <param name="email">The email address to associate with the new user.</param>
         /// <returns>A <see cref="CreateAppUser"/> object representing the registered user.</returns>
-        Task<CreateAppUser> RegisterAppUser(CreateAppUser user, string email);
+        Task<CreateAppUser> RegisterAppUser(CreateAppUser user, string email, Guid? guid=null);
 
         /// <summary>
         /// Updates the details of an existing user.

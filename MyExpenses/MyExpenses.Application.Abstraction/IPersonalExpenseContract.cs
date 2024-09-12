@@ -60,5 +60,12 @@ namespace MyExpenses.Application.Abstraction
         /// <param name="id">The ID of the personal expense to delete.</param>
         /// <returns><c>true</c> if the personal expense was successfully deleted; otherwise, <c>false</c>.</returns>
         Task<bool> DeletePersonalExpense(int id);
+
+        /// <summary>
+        /// Get the list of categories
+        /// </summary>
+        /// <param name="appUserId"></param>
+        /// <returns> Return the list of categories </returns>
+        Task<List<string>> GetCategories(int appUserId);
     }
 }

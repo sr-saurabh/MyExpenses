@@ -60,19 +60,20 @@ namespace MyExpenses.API
                 s.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 s.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-                .AddJwtBearer(x =>
-                {
-                    x.RequireHttpsMetadata = false;
-                    x.SaveToken = true;
-                    x.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JWT:Key"])),
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidAudience = configuration["JWT:ValidAudience"],
-                        ValidIssuer = configuration["JWT:ValidIssuer"],
-                    };
-                });
+             .AddJwtBearer(x =>
+             {
+                 x.RequireHttpsMetadata = false;
+                 x.SaveToken = true;
+                 x.TokenValidationParameters = new TokenValidationParameters
+                 {
+                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JWT:Key"])),
+                     ValidateIssuer = false,
+                     ValidateAudience = false,
+                     ValidAudience = configuration["JWT:ValidAudience"],
+                     ValidIssuer = configuration["JWT:ValidIssuer"],
+                     ClockSkew = TimeSpan.FromMinutes(10) // Increased skew allowance
+                 };
+             });
 
             return services;
         }
@@ -99,7 +100,7 @@ namespace MyExpenses.API
                     .AddScoped<IPersonalExpenseRepo, PersonalExpenseRepo>()
                     .AddScoped<IContactRepo, ContactRepo>()
                     .AddScoped<IGroupExpenseRepo, GroupExpenseRepo>()
-                    .AddScoped<IGroupExpenseShareRepo,  GroupExpenseShareRepo>()
+                    .AddScoped<IGroupExpenseShareRepo, GroupExpenseShareRepo>()
                     .AddScoped<IGroupRepo, GroupRepo>();
             ;
             return services;

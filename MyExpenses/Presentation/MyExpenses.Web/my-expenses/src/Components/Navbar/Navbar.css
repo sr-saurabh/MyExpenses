@@ -1,0 +1,21 @@
+.profile-context ul {
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.profile-context {
+  top: 3rem;
+}
+.nav-menu ul li a,
+.profile-context ul li a {
+  text-decoration: none;
+}
+.active-tab .p-menuitem-content {
+  border-radius: 0.5rem;
+  background: var(--bs-info) !important;
+}
+.active-tab .p-menuitem-content a{
+  color: #fff !important;
+}

@@ -25,7 +25,7 @@ namespace MyExpenses.Application.Providers
         {
             _personalExpenseRepo = personalExpenseRepo;
             _mapper = mapper;
-        } 
+        }
 
 
         /// <summary>
@@ -35,7 +35,9 @@ namespace MyExpenses.Application.Providers
         /// <returns></returns>
         public async Task<CreatePersonalExpense> CreatePersonalExpenses(CreatePersonalExpense expense)
         {
+
             var personalExpense = _mapper.Map<PersonalExpenses>(expense);
+
             var result = await _personalExpenseRepo.CreateAsync(personalExpense);
             return _mapper.Map<CreatePersonalExpense>(personalExpense);
         }
@@ -62,8 +64,8 @@ namespace MyExpenses.Application.Providers
         public async Task<IEnumerable<ApiPersonalExpense>> GetPersonalExpenses(int userId)
         {
 
-            var personalExpenses =await _personalExpenseRepo.Search(pe => pe.Id == userId).ToListAsync();
-            return _mapper.Map<IEnumerable<ApiPersonalExpense>>(personalExpenses);  
+            var personalExpenses = _personalExpenseRepo.Search(pe => pe.AppUserId == userId).ToList();
+            return _mapper.Map<IEnumerable<ApiPersonalExpense>>(personalExpenses);
         }
 
         /// <summary>
@@ -112,7 +114,7 @@ namespace MyExpenses.Application.Providers
             //    predicate = predicate.And(e => e.Date.Month == filter.Month.Value && e.Date.Year == filter.Year.Value);
             //}
 
-            var result =(await _personalExpenseRepo.GetFilteredExpenses(userId, filter)).ToList();
+            var result = (await _personalExpenseRepo.GetFilteredExpenses(userId, filter)).ToList();
             //var summary =await _personalExpenseRepo.GetPersonalExpenseSummary(userId, predicate);
             PersonalExpenseSummary summary = new PersonalExpenseSummary()
             {
@@ -140,7 +142,7 @@ namespace MyExpenses.Application.Providers
         /// <exception cref="NotImplementedException"></exception>
         public async Task<PersonalExpenseSummary> GetPersonalExpenseSummary(int userId)
         {
-            var result =await _personalExpenseRepo.GetPersonalExpenseSummary(userId);
+            var result = await _personalExpenseRepo.GetPersonalExpenseSummary(userId);
             return result;
         }
 
@@ -169,7 +171,17 @@ namespace MyExpenses.Application.Providers
         public async Task<bool> DeletePersonalExpense(int id)
         {
             var deletedExpense = await _personalExpenseRepo.DeleteAsync(id);
-            return deletedExpense!=null;
+            return deletedExpense != null;
+        }
+        /// <summary>
+        /// Get the list of categories
+        /// </summary>
+        /// <param name="appUserId"></param>
+        /// <returns> Return the list of categories </returns>
+        public async Task<List<string>> GetCategories(int appUserId)
+        {
+            var categories = _personalExpenseRepo.Search(pe => pe.AppUserId == appUserId).Select(pe => pe.Category).Distinct().ToList();
+            return categories;
         }
     }
 }

@@ -21,5 +21,7 @@ namespace MyExpenses.Application.Abstraction
         /// <param name="register">The registration details of the user.</param>
         /// <returns>An <see cref="AuthResponse"/> object containing authentication information, such as tokens.</returns>
         Task<AuthResponse> Register(Register register);
+
+        Task<AuthResponse> LoginWithGoogle(GoogleLogin credentials);
     }
 }

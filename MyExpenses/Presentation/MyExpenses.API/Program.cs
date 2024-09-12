@@ -53,7 +53,16 @@ builder.Services.AddSwaggerGen(c =>
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 });
-
+//builder.Services.AddCors(options =>
+//{
+//    options.AddDefaultPolicy(
+//        builder =>
+//        {
+//            builder.AllowAnyOrigin()
+//                   .AllowAnyHeader()
+//                   .AllowAnyMethod();
+//        });
+//});
 var app = builder.Build();
 
 // Configure t`he HTTP request pipeline.
@@ -69,5 +78,12 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseCors(builder =>
+{
+    builder
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader();
+});
 
 app.Run();
