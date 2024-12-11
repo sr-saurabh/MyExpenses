@@ -52,7 +52,7 @@ export default function PersonalExpenseForm(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const formError = vlaidateForm(formData);
+        const formError = validateForm(formData);
         if (formError) {
             setFormError(formError);
             if (Object.keys(formError).length > 0)
@@ -60,7 +60,7 @@ export default function PersonalExpenseForm(props) {
         }
         props.onSubmit(formData);
     };
-    const vlaidateForm = (formData) => {
+    const validateForm = (formData) => {
         const formError = {};
         if (!formData.description) {
             formError.description = 'Description is required';

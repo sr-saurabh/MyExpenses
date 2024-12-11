@@ -16,7 +16,10 @@ namespace MyExpenses.Application.Abstraction
         /// </summary>
         /// <param name="expense">The details of the personal expense to create.</param>
         /// <returns>A <see cref="CreatePersonalExpense"/> object representing the created personal expense.</returns>
-        Task<CreatePersonalExpense> CreatePersonalExpenses(CreatePersonalExpense expense);
+        async Task<CreatePersonalExpense> CreatePersonalExpenses(CreatePersonalExpense expense)
+        {
+            return new();
+        }
 
         /// <summary>
         /// Retrieves a list of personal expenses for a specific user.
