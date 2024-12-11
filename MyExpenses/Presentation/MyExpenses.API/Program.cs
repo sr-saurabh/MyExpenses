@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using MyExpenses.API;
+using MyExpenses.API.Middlewares;
 using MyExpenses.Infrastructure.Postgres;
 using System.Reflection;
 
@@ -86,32 +87,34 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
-
-
-app.MapControllers();
-app.MapGet("/api/weather", () =>
-{
-    return Results.Ok(new { Temperature = "22°C", Condition = "Sunny" });
-});
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).ToList();
-    return Results.Ok(forecast);
-});
-
-//adding those cors configuration 
-//app.UseCors("s");
-
 app.UseCors(options =>
 {
-    options.WithOrigins(["ss","sss"])
+    options.WithOrigins(["ss", "sss"])
     .AllowAnyOrigin()
     .AllowAnyMethod()
     .AllowAnyHeader();
 });
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
+//controllers end points in the program.cs itself (minimal API)
+//app.MapGet("/api/weather", () =>
+//{
+//    return Results.Ok(new { Temperature = "22°C", Condition = "Sunny" });
+//});
+//app.MapGet("/weatherforecast", () =>
+//{
+//    var forecast = Enumerable.Range(1, 5).ToList();
+//    return Results.Ok(forecast);
+//});
+
+
+//adding those cors configuration 
+//app.UseCors(s);
+
+app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllers();
 
 app.Run();
