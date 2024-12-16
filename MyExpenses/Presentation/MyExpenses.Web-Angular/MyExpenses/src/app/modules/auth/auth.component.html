@@ -1,0 +1,8 @@
+<div class="auth-container">
+  <div *ngIf="isLogin">
+    <app-login (changeIsLogin)="changeInLogin($event)"></app-login>
+  </div>
+  <div *ngIf="!isLogin">
+    <app-register (changeIsLogin)="changeInLogin($event)"></app-register>
+  </div>
+</div>

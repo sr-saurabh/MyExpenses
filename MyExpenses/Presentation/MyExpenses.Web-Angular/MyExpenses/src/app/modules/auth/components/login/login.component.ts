@@ -1,10 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+  @Output() changeIsLogin: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+
+  ngOnInit(): void {
+
+  }
+  onRegister(){
+    this.changeIsLogin.emit(false);
+  }
 }

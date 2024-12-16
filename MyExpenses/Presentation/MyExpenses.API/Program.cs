@@ -89,7 +89,7 @@ if (app.Environment.IsDevelopment())
 }
 app.UseCors(options =>
 {
-    options.WithOrigins(["ss", "sss"])
+    options
     .AllowAnyOrigin()
     .AllowAnyMethod()
     .AllowAnyHeader();
