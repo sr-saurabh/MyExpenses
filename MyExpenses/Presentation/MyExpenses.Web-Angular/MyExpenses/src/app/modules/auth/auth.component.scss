@@ -1,7 +1,13 @@
-.auth-container{
+.auth-container {
   background-image: url('../../../assets/login_bg.jpg');
   background-position: center;
   background-size: cover;
   min-height: 100vh;
   width: 100vw;
+
+
+  .content {
+    width: clamp(200px, 50%, 600px);
+    padding: 5rem;
+  }
 }

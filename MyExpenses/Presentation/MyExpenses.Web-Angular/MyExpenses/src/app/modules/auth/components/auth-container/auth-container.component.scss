@@ -1,0 +1,14 @@
+:host{
+  --bg-color:linear-gradient(#8428e3, #3c01f3);;
+}
+
+.auth-container {
+  min-height: 100vh;
+  width: 100vw;
+  background-color: var(--bg-color);
+
+  .desc-container{
+    background: var(--bg-color);
+    flex-grow: 1;
+  }
+}

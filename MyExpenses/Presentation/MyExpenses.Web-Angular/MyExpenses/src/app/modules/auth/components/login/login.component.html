@@ -1,10 +1,61 @@
-<div class="login-container">
-  <div>
+<app-auth-container>
+  <div class="d-flex flex-column login-container form-content">
+    <div class="d-flex flex-column justify-content-center align-items-center">
+      <div class="greetings d-flex flex-column align-items-center">
+        <p class="fs-4 fw-bold mb-0">Hello!</p>
+        <span class="text-lighter fs">Signin to your account</span>
+      </div>
+      <form [formGroup]="loginForm" class="d-flex flex-column gap-3 mt-3 w-100">
+        <input
+          pInputText
+          type="email"
+          formControlName="email"
+          aria-label="Email"
+          placeholder="Email"
+        />
+        <p-password
+          formControlName="password"
+          inputStyleClass="w-100"
+          [feedback]="false"
+          [toggleMask]="true"
+          placeholder="Password"
+        />
+      </form>
 
+      <!-- <span (click)="onRegister()" class="cursor-pointer">SignUp</span> -->
+      <!-- <br /> -->
+      <div class="d-flex justify-content-between w-100 mt-3 align-items-center">
+        <p class="fs-6">
+          Forgot password?
+          <span class="fs-6 fw-medium text-info-emphasis cursor-pointer"
+            >reset</span
+          >
+        </p>
+        <p-button
+          icon="pi pi-arrow-right"
+          styleClass="rounded-circle submit-btn"
+          size="large"
+          [rounded]="true"
+        />
+      </div>
+      <div class="signup">
+        <span>Don't have an account? </span>
+        <span class="fs-6 fw-medium text-info-emphasis cursor-pointer">Create</span>
+      </div>
+      <p-divider align="center" styleClass="w-100">
+        <b>OR</b>
+      </p-divider>
+
+      <div class="google-login">
+        <!-- <button type="button" (click)="loginWithGoogle()" class="btn btn-danger">Login with Google</button> -->
+
+      </div>
+
+    </div>
   </div>
-  <div class="d-flex justify-content-between">
-    <span (click)="onRegister()" class="cursor-pointer">SignUp</span>
-    <br>
-    <span>Login</span>
+
+
+  <div class="desc-content">
+    <h2 class="text-white">Welcome Back</h2>
   </div>
-</div>
+</app-auth-container>
