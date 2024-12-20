@@ -1,14 +1,29 @@
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { environment } from 'src/environments/environment';
+import { AuthResponse } from '../models/auth/authResponse';
+import { Login } from '../models/auth/login';
+import { Register } from '../models/auth/register';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
+  private baseUrl= environment.baseUrl;
+  constructor(private http:HttpClient) {}
 
-  constructor(private http:HttpClient) { }
-  // googleLogin(token: string): Observable<any> {
-  //   return this.http.post<any>(`${this.baseUrl}/google-login`, { token });
-  // }
+  login(loginData: Login){
+    return this.http.post<AuthResponse>(
+      `${this.baseUrl}/auth/login`,loginData,
+    );
+  }
+
+  signup(registerData:Register){
+    var s= this.http.post<AuthResponse>(`${this.baseUrl}/Auth/register`,registerData)
+    return s;
+  }
+
+
+  isAuthorized():boolean{
+    return !!localStorage.getItem('token');
+  }
 }

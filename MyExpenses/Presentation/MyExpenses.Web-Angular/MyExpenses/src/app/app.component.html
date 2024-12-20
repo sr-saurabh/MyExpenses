@@ -1,1 +1,4 @@
-<router-outlet></router-outlet>
+<app-wrapper *ngIf="isAuthenticated">
+  <router-outlet></router-outlet>
+</app-wrapper>
+<router-outlet *ngIf="!isAuthenticated"></router-outlet>

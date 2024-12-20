@@ -6,7 +6,8 @@
 .login-container {
   // background-color: rgb(240, 240, 240);
   padding: 5rem;
-  width: clamp(300px, 50%, 900px);
+  padding-top: 10%;
+  width: clamp(300px, 60%, 1000px);
 
   ::ng-deep .p-password{
     width: 100%;
@@ -27,4 +28,21 @@
     width: 100%;
   }
 
+}
+.desc-content{
+  padding: 20% 1rem;
+}
+@media(max-width:666px){
+  .login-container{
+    width: 100%;
+  }
+  .desc-content{
+    display:none;
+  }
+}
+@media(max-width:425px){
+  .login-container{
+    padding: 3rem;
+    padding-top: 10%;
+  }
 }

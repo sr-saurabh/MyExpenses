@@ -1,0 +1,25 @@
+<div class="d-flex flex-column main-container">
+  <div class="header-nav p-3 d-flex align-items-center justify-content-between">
+    <div class="logo-conntainer">
+      <div class="fs-4 fw-bold logo text-white">MyExpenses</div>
+    </div>
+    <div class="position-relative search-container">
+      <input pInputText type="text" name="searchText"  [(ngModel)]="searchText" id="" class="w-100 p-2"placeholder="Search">
+      <span class="position-absolute search-icon"><p-button icon="pi pi-search" [styleClass]="'rounded-end-2 search-btn'" severity="secondary" (onclick)="emitSearchValue()" /></span>
+    </div>
+    <div (click)="logout()" class="cursor-pointer text-white">Profile-Logout</div>
+  </div>
+  <div class="d-flex flex-grow-1 content">
+    <div class="text-white side-nav p-3">
+      <ul class="m-0 p-0">
+        <ng-container *ngFor="let item of sideNavItem; let idx=index">
+          <li [ngClass]="{'list-unstyled cursor-pointer p-3 side-nav-item rounded-3 fs-4 fw-medium': true, 'active': activeIndex == idx}" (click)="itemSelected(idx)">{{item}}</li>
+        </ng-container>
+
+      </ul>
+    </div>
+    <div class="flex-grow-1">
+      <ng-content> </ng-content>
+    </div>
+  </div>
+</div>

@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { authGuard } from './auth.guard';
+import { LoginComponent } from './modules/auth/components/login/login.component';
 
 const routes: Routes = [
   {
-    path: 'login',
+    path: 'auth',
     loadChildren: () =>
       import('./modules/auth/auth.module').then((m) => m.AuthModule),
   },
@@ -13,16 +15,18 @@ const routes: Routes = [
       import('./modules/personal-expenses/personal-expenses.module').then(
         (m) => m.PersonalExpensesModule
       ),
+      canActivate:[authGuard]
   },
   {
     path: 'groups',
     loadChildren: () =>
       import('./modules/groups/groups.module').then((m) => m.GroupsModule),
+    canActivate:[authGuard]
   },
   {
     path:'',
-    redirectTo:'login',
-    pathMatch:'full'
+    redirectTo:'auth',
+    pathMatch:'prefix'
   }
 ];
 

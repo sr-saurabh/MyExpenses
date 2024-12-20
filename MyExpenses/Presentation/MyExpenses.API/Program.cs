@@ -95,7 +95,7 @@ app.UseCors(options =>
     .AllowAnyHeader();
 });
 
-app.UseMiddleware<ErrorHandlingMiddleware>();
+//app.UseMiddleware<ErrorHandlingMiddleware>();
 //controllers end points in the program.cs itself (minimal API)
 //app.MapGet("/api/weather", () =>
 //{

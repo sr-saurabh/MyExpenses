@@ -1,9 +1,123 @@
-<div class="login-container">
-  <div>
+<app-auth-container>
+  <div class="d-flex flex-column login-container form-content">
+    <div class="d-flex flex-column justify-content-center align-items-center">
+      <div class="greetings d-flex flex-column align-items-center">
+        <p class="fs-4 fw-bold mb-0">Hello!</p>
+        <span class="text-lighter fs">Signin to your account</span>
+      </div>
+      <form
+        [formGroup]="registerForm"
+        class="d-flex flex-column gap-2 mt-3 w-100"
+      >
+        <div class="w-100">
+          <input
+            pInputText
+            type="email"
+            formControlName="email"
+            aria-label="Email"
+            placeholder="Email"
+            aria-describedby="email-help"
+            [ngClass]="'w-100'"
+          />
+          <div
+            *ngIf="
+              registerForm.get('email')?.touched &&
+              registerForm.get('email')?.invalid
+            "
+          >
+            <small
+              id="email-help"
+              *ngIf="registerForm.get('email')?.errors?.['required']"
+              class="text-danger fs-6"
+              >Email is required</small
+            >
+            <small
+              id="email-help"
+              *ngIf="registerForm.get('email')?.errors?.['email']"
+              class="text-danger fs-6"
+              >Invalid email</small
+            >
+          </div>
+        </div>
+        <div class="w-100">
+          <p-password
+            formControlName="password"
+            inputStyleClass="w-100"
+            [feedback]="true"
+            [toggleMask]="true"
+            placeholder="Password"
+            aria-describedby="password-help"
+          />
+          <div
+            *ngIf="
+              registerForm.get('password')?.touched &&
+              registerForm.get('password')?.invalid
+            "
+          >
+            <small
+              id="password-help"
+              *ngIf="registerForm.get('password')?.errors?.['required']"
+              class="text-danger fs-6"
+              >Password is required</small
+            >
+          </div>
+        </div>
+        <div class="w-100">
+          <input
+            pInputText
+            type="text"
+            formControlName="confirmPassword"
+            aria-label="Confirm Password"
+            placeholder="Confirm Password"
+            aria-describedby="confPass-help"
+            [ngClass]="'w-100'"
+          />
+          <div
+            *ngIf="
+              registerForm.get('confirmPassword')?.touched &&
+              registerForm.get('confirmPassword')?.invalid
+            "
+          >
+            <small
+              id="confPass-help"
+              *ngIf="registerForm.get('confirmPassword')?.errors?.['required']"
+              class="text-danger fs-6"
+              >Confirm password is required</small
+            >
+          </div>
+        </div>
+      </form>
 
+      <div class="d-flex justify-content-between w-100 mt-3 align-items-center">
+        <div class="signup">
+          <span>Have an account? </span>
+          <span
+            class="fs-6 fw-medium text-info-emphasis cursor-pointer"
+            (click)="redirectToLogin()"
+            >Login</span
+          >
+        </div>
+        <p-button
+          icon="pi pi-arrow-right"
+          styleClass="rounded-circle submit-btn"
+          size="large"
+          [rounded]="true"
+          (onClick)="submitForm()"
+        />
+      </div>
+
+      <p-divider align="center" styleClass="w-100">
+        <b>OR</b>
+      </p-divider>
+
+      <div class="google-login"></div>
+      <!-- Google Login -->
+      Google Login
+    </div>
   </div>
-  <div class="d-flex justify-content-between">
-    <span (click)="onRegister()">SignUp</span>
-    <span>Login</span>
+
+  <div class="desc-content text-white">
+    <h2 class="text-white">Welcome to the MyExpenses App</h2>
+    <h3>Here you can add and manage your expenses</h3>
   </div>
-</div>
+</app-auth-container>

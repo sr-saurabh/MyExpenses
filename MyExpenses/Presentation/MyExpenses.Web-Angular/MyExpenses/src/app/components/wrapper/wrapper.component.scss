@@ -1,0 +1,135 @@
+:host {
+  --header-height: 62px;
+  --bg-header-color: linear-gradient(#8428e3, #3c01f3);
+  --bg-side-nav-color: linear-gradient(#3c01f3, #8428e3);
+  --bg-color-hover: linear-gradient(#3c01f3, #8428e3);
+  --input-border-hover-color:  #8428e3;
+  // --input-border-hover-color: #475569;
+
+
+}
+
+.main-container {
+  .header-nav {
+    height: var(--header-height);
+    background: var(--bg-header-color);
+
+    .search-container {
+      width: clamp(10rem, 30%, 15rem);
+      input:hover{
+        border-color: var(--input-border-hover-color);
+      }
+      input:focus{
+        border-color: var(--input-border-hover-color);
+        box-shadow: none;
+      }
+      .search-icon {
+        top: 0;
+        bottom: 0;
+        right: 0;
+        ::ng-deep .search-btn{
+          padding-block: .5rem;
+        }
+        ::ng-deep .search-btn:focus{
+          box-shadow: none;
+        }
+
+        ::ng-deep .search-btn:hover{
+          opacity: .8;
+        }
+      }
+    }
+  }
+
+  .logo-conntainer {
+    width: 10rem;
+
+    .logo {
+      width: 0px;
+      animation-name: logo;
+      opacity: .2;
+      overflow: hidden;
+      animation-duration: 2s;
+      animation-timing-function: ease;
+      /* Smooth transition */
+      animation-fill-mode: forwards;
+      /* Keeps the final state at the end */
+    }
+  }
+
+  .side-nav {
+    min-height: calc(100vh - var(--header-height));
+    background: var(--bg-side-nav-color);
+    width: 15rem;
+
+    .side-nav-item:hover {
+      background: var(--bg-header-color);
+      box-shadow: 0px 0px 7px -2px #0000007a;
+    }
+
+    .active {
+      box-shadow: 0px 0px 7px -2px #0000007a;
+      background: var(--bg-header-color);
+    }
+  }
+
+
+}
+
+
+
+@keyframes logo {
+  0% {
+    width: 0rem;
+  }
+
+  10% {
+    width: 1rem;
+    opacity: .3;
+  }
+
+  20% {
+    width: 2rem;
+    opacity: .4;
+  }
+
+  30% {
+    width: 3rem;
+    opacity: .5;
+  }
+
+  40% {
+    width: 4rem;
+    opacity: .6;
+  }
+
+  50% {
+    width: 5rem;
+    opacity: .7;
+  }
+
+  60% {
+    width: 6rem;
+    opacity: .8;
+  }
+
+  70% {
+    width: 7rem;
+    opacity: .9;
+  }
+
+  80% {
+    width: 8rem;
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+    width: 9rem;
+  }
+
+  100% {
+    opacity: 1;
+    width: 10rem;
+  }
+}

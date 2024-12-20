@@ -1,0 +1,50 @@
+:host{
+  --bg-color:linear-gradient(#8428e3, #3c01f3);
+  --bg-color-hover:linear-gradient(#3c01f3, #8428e3);
+}
+
+.login-container {
+  // background-color: rgb(240, 240, 240);
+  padding: 5rem;
+  padding-top: 10%;
+
+  width: clamp(450px, 60%, 1000px);
+
+  ::ng-deep .p-password{
+    width: 100%;
+  }
+  ::ng-deep .submit-btn{
+    background: var(--bg-color);
+    border: 0;
+  }
+  ::ng-deep .submit-btn:focus{
+    box-shadow: none;
+  }
+
+  ::ng-deep .submit-btn:hover{
+    background: var(--bg-color-hover) ;
+    opacity: .8;
+  }
+  ::ng-deep p-divider{
+    width: 100%;
+  }
+
+}
+.desc-content{
+  padding: 20% 1rem;
+}
+
+@media(max-width:666px){
+  .login-container{
+    width: 100%;
+  }
+  .desc-content{
+    display:none;
+  }
+}
+@media(max-width:425px){
+  .login-container{
+    padding: 3rem;
+    padding-top: 10%;
+  }
+}
