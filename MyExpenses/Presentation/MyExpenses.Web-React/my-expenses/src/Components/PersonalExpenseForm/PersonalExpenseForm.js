@@ -125,7 +125,7 @@ export default function PersonalExpenseForm(props) {
                     </FloatLabel>
                     <div className='text-danger'>{formError?.transactionType}</div>
                 </div>
-                <Button label="Submit" severity='info' className='rounded-3 mt-2' iconPos='right' />
+                <Button label="Submit" className='rounded-3 mt-2' iconPos='right' />
             </form>
         </div>
     )

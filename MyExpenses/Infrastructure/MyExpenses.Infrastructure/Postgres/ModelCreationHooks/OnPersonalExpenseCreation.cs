@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyExpenses.Domain.core.Entities.Base;
+using MyExpenses.Domain.core.Entities.Common;
 using MyExpenses.Domain.core.Entities.Expenses;
 using System;
 using System.Collections.Generic;
@@ -32,6 +33,11 @@ namespace MyExpenses.Infrastructure.Postgres.ModelCreationHooks
                         .HasOne(pe=>pe.User)
                         .WithMany(p=>p.PersonalExpenses)
                         .HasForeignKey(pe => pe.AppUserId);
+            
+            modelBuilder.Entity<PersonalExpenses>()
+                        .HasOne(pe=>pe.Account)
+                        .WithMany(p=>p.PersonalExpenses)
+                        .HasForeignKey(pe => pe.AccountId);
 
 
             return modelBuilder;

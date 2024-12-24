@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using MyExpenses.Domain.core.Entities.Common;
 using MyExpenses.Domain.core.Entities.Expenses;
 using MyExpenses.Domain.core.Entities.Group;
 using MyExpenses.Domain.core.Entities.Relationships;
@@ -71,6 +72,24 @@ namespace MyExpenses.Infrastructure.Postgres
         public DbSet<UserGroupMembership> UserGroupMemberships { get; set; }
         #endregion
 
+        #region Common
+        /// <summary>
+        /// Gets or sets the <see cref="DbSet{Category}"/> representing the Category
+        /// </summary>
+        public DbSet<Category> Categories { get; set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="DbSet{Account}"/> representing the Account
+        /// </summary>
+        public DbSet<Account> Accounts { get; set; }
+
+        /// <summary>
+        /// Gets or sets the <see cref="DbSet{Goal}"/> representing the Goal
+        /// </summary>
+        public DbSet<Goal> Goals { get; set; }
+
+        #endregion
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MyExpensesDbContext"/> class with the specified options.
         /// </summary>
@@ -94,7 +113,10 @@ namespace MyExpenses.Infrastructure.Postgres
                         .OnContactCreating()
                         .OnSettlementCreating()
                         .OnInvitationCreating()
-                        .OnUserGroupCreating();
+                        .OnUserGroupCreating()
+                        .OnAccountCreating()
+                        .OnCategoryCreating()
+                        .OnGoalCreating();
 
             modelBuilder.Entity<AppIdentityUser>()
                 .HasIndex(u => u.ActivityStatus);

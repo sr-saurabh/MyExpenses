@@ -1,4 +1,5 @@
 ﻿using MyExpenses.Domain.core.Entities.Base;
+using MyExpenses.Domain.core.Entities.Common;
 using MyExpenses.Domain.core.Entities.Expenses;
 using MyExpenses.Domain.core.Entities.Relationships;
 using MyExpenses.Domain.core.Entities.Settlement;
@@ -99,5 +100,20 @@ namespace MyExpenses.Domain.core.Entities.User
         /// Gets or sets the collection of settlements where this user is the recipient.
         /// </summary>
         public ICollection<SettlementHistory>? ToSettlements { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the collection of account of this user.
+        /// </summary>
+        public ICollection<Account>? Accounts { get; set; }
+
+        /// <summary>
+        /// Gets or sets the collection of categories of this user.
+        /// </summary>
+        public ICollection<Category>? Categories { get; set; }
+
+        /// <summary>
+        /// Gets or sets the collection of Goals of this user.
+        /// </summary>
+        public ICollection<Goal>? Goals { get; set; }
     }
 }

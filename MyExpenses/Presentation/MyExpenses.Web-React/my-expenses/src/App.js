@@ -20,12 +20,9 @@ function App() {
 
 
     const userProfile = localStorage.getItem('profileData');
-    // console.log("test", userProfile);
-    // console.log("test1", typeof userProfile);
     if (userProfile != null && userProfile != undefined && userProfile!="" ) {
       setProfileData(JSON.parse(userProfile));
-      // console.log(1);
-      // console.log(profileData);
+
       setIsLogged(true);
     } else {
       getCurrentUserProfile()

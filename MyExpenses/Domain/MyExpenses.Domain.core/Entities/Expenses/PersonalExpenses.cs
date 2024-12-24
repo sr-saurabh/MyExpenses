@@ -1,4 +1,5 @@
 ﻿using MyExpenses.Domain.core.Entities.Base;
+using MyExpenses.Domain.core.Entities.Common;
 using MyExpenses.Domain.core.Entities.Enums;
 using MyExpenses.Domain.core.Entities.User;
 
@@ -18,6 +19,11 @@ namespace MyExpenses.Domain.core.Entities.Expenses
         /// Gets or sets the ID of the user associated with this expense.
         /// </summary>
         public int AppUserId { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the ID of the user associated with this expense.
+        /// </summary>
+        public int? AccountId{ get; set; }
 
         /// <summary>
         /// Gets or sets the description of the expense.
@@ -43,5 +49,10 @@ namespace MyExpenses.Domain.core.Entities.Expenses
         /// Gets or sets the user who incurred this expense.
         /// </summary>
         public AppUser User { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the account for the expense.
+        /// </summary>
+        public Account? Account { get; set; }
     }
 }
