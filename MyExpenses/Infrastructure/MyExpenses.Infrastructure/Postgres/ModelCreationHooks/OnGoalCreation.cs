@@ -1,12 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyExpenses.Domain.core.Entities.Common;
-using MyExpenses.Domain.core.Entities.Expenses;
 using MyExpenses.Domain.core.Entities.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyExpenses.Infrastructure.Postgres.ModelCreationHooks
 {
@@ -17,9 +11,15 @@ namespace MyExpenses.Infrastructure.Postgres.ModelCreationHooks
             modelBuilder.OnAuditableEntityCreating<AppUser>();
 
             modelBuilder.Entity<Goal>()
-                        .HasOne(pe => pe.AppUser)
+                        .HasOne(g => g.AppUser)
                         .WithMany(p => p.Goals)
-                        .HasForeignKey(pe => pe.AppUserId);
+                        .HasForeignKey(g => g.AppUserId);
+
+            modelBuilder.Entity<Goal>()
+                        .HasOne(g => g.Category)
+                        .WithMany()
+                        .HasForeignKey(g => g.CategoryId);
+
 
             return modelBuilder;
         }

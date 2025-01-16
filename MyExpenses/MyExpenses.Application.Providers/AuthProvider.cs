@@ -141,7 +141,6 @@ namespace MyExpenses.Application.Providers
                         FirstName = givenName,
                         LastName = familyName,
                         PhoneNumber = "",
-                        MonthlyBudget = 0
                     };
                     await _appUserContract.RegisterAppUser(appUser, email, user.Id);
 

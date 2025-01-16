@@ -1,5 +1,5 @@
-class RegisterModel {
-    email: string;
-    password: string;
+import { LoginModel } from "./LoginModel";
+
+export interface RegisterModel extends LoginModel {
     confirmPassword: string;
 }

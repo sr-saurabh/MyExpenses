@@ -1,10 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MyExpenses.Domain.core.Entities.User;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MyExpenses.Infrastructure.Postgres.ModelCreationHooks
 {
@@ -25,6 +20,8 @@ namespace MyExpenses.Infrastructure.Postgres.ModelCreationHooks
             //    .HasMany(a => a.Contacts)
             //    .WithOne()
             //    .HasForeignKey(c => c.FromUserId);
+
+            modelBuilder.Entity<AppUser>().HasOne(user => user.UserIdentity).WithOne().HasForeignKey<AppUser>(user => user.UserId).OnDelete(DeleteBehavior.Restrict);
 
             return modelBuilder;
         }

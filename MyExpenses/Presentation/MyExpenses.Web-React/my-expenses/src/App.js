@@ -1,16 +1,20 @@
-import './App.css';
-import React from 'react';
-import { useState, useEffect } from 'react';
-import AppRouters from './AppRouters/AppRouters';
-import Navbar from './Components/Navbar/Navbar';
-import { getCurrentUserProfile } from './Services/userServices';
-import { useNavigate } from 'react-router-dom';
 import 'primeicons/primeicons.css';
+import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import './App.css';
+import AppRouters from './AppRouters/AppRouters';
+import Sidebar from './Components/Sidebar/Sidebar';
+import TopNav from './Components/TopNav/TopNav.tsx';
+import UserContext from './Context/UserContext.ts';
+import UserContextProvider from './Context/UserContextProvider.tsx';
+import { getCurrentUserProfile } from './Services/userServices.tsx';
 
 function App() {
   var [profileData, setProfileData] = useState({});
   var [isLogged, setIsLogged] = useState(false);
   const navigate = useNavigate();
+  const { user, setUser } = useContext(UserContext);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token == null || token == undefined) {
@@ -18,25 +22,34 @@ function App() {
       return;
     }
 
-
-    const userProfile = localStorage.getItem('profileData');
-    if (userProfile != null && userProfile != undefined && userProfile!="" ) {
-      setProfileData(JSON.parse(userProfile));
-
+    if (user !== null) {
+      console.log(user)
       setIsLogged(true);
-    } else {
-      getCurrentUserProfile()
-      .then((response) => {
-        const profile = response.data;
-        setProfileData(profile);
-        localStorage.setItem('profileData', JSON.stringify(profile));
+    }
+    else {
+      const userProfile = localStorage.getItem('profileData');
+      if (userProfile !== undefined && userProfile !== null) {
+        const pd= JSON.parse(userProfile);
+        setProfileData(pd);
+        setUser(JSON.parse(userProfile));
         setIsLogged(true);
-        console.log(profileData);
-        })
-        .catch((error) => {
-          console.log(error);
-          navigate('/login');
-        });
+      } else {
+        getCurrentUserProfile()
+          .then((response) => {
+            if (response.status !== 200)
+              return;
+            // throw new Error('Failed to fetch user profile');
+            const profile = response.data;
+            setProfileData(profile);
+            localStorage.setItem('profileData', JSON.stringify(profile));
+            setUser(profile);
+            setIsLogged(true);
+          })
+          .catch((error) => {
+            console.log(error);
+            navigate('/login');
+          });
+      }
 
     }
   }, [navigate]);
@@ -51,12 +64,25 @@ function App() {
 
   return (
     <>
-      {isLogged &&
-        <div>
-          <Navbar profileData={profileData} handleLogout={handleLogout} />
+      <div className='d-flex content'>
+        {isLogged &&
+          <div>
+            <Sidebar profileData={profileData} handleLogout={handleLogout} />
+          </div>
+        }
+        <div className='flex-grow-1'>
+          {isLogged &&
+            <div>
+              <TopNav name={profileData.fullName}></TopNav>
+            </div>
+          }
+          <div className={`${isLogged ? 'main-container' : ''}`}>
+
+            <AppRouters />
+          </div>
         </div>
-      }
-      <AppRouters />
+      </div>
+
 
     </>
   );

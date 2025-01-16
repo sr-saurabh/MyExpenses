@@ -35,14 +35,14 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories.BaseRepo
         /// </summary>
         /// <param name="entity">The entity to be created.</param>
         /// <returns>True if the entity was successfully created; otherwise, false.</returns>
-        public async Task<bool> CreateAsync(T entity)
+        public async Task<T> CreateAsync(T entity)
         {
             try
             {
                 entity = SetCreateAuditFields(entity);
                 var result = await _dbSet.AddAsync(entity);
                 var res = await _dbContext.SaveChangesAsync();
-                return res > 0;
+                return result.Entity;
             }
             catch (Exception ex)
             {

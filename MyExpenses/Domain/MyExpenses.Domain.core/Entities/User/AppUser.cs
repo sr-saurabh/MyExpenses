@@ -52,11 +52,6 @@ namespace MyExpenses.Domain.core.Entities.User
         public string PhoneNumber { get; set; }
 
         /// <summary>
-        /// Gets or sets the monthly budget set by the user.
-        /// </summary>
-        public double MonthlyBudget { get; set; }
-
-        /// <summary>
         /// Gets or sets the collection of contacts where this user is the sender of the contact request.
         /// </summary>
         public ICollection<Contact>? FromContacts { get; set; }
@@ -72,9 +67,9 @@ namespace MyExpenses.Domain.core.Entities.User
         public ICollection<UserGroupMembership>? GroupMemberships { get; set; }
 
         /// <summary>
-        /// Gets or sets the collection of personal expenses incurred by the user.
+        /// Gets or sets the collection of personal expenses incurred by the user as activity.
         /// </summary>
-        public ICollection<PersonalExpenses>? PersonalExpenses { get; set; }
+        public ICollection<Activity>? Activities { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of expenses where this user is the spender.
@@ -109,7 +104,7 @@ namespace MyExpenses.Domain.core.Entities.User
         /// <summary>
         /// Gets or sets the collection of categories of this user.
         /// </summary>
-        public ICollection<Category>? Categories { get; set; }
+        //public ICollection<Category>? Categories { get; set; }
 
         /// <summary>
         /// Gets or sets the collection of Goals of this user.

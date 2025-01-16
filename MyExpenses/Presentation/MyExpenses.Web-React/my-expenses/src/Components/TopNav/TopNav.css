@@ -1,0 +1,15 @@
+.search-icon {
+  top: 16px;
+  right: 16px;
+}
+
+.top-nav {
+  padding: 20px 32px 20px 24px;
+}
+.nav-right {
+  width: clamp(12rem, 20%, 17rem);
+}
+.search-input{
+    padding:12px 32px;
+    height: 48px;
+}

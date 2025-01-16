@@ -203,24 +203,15 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Property<DateTime?>("ActivityStatusChangedOn")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("AppUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("Budget")
-                        .HasColumnType("integer");
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("MyProperty")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("text");
 
                     b.Property<Guid?>("UpdatedBy")
                         .HasColumnType("uuid");
@@ -229,8 +220,6 @@ namespace MyExpenses.Infrastructure.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("AppUserId");
 
                     b.ToTable("Categories");
                 });
@@ -255,6 +244,12 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Property<int>("AppUserId")
                         .HasColumnType("integer");
 
+                    b.Property<decimal?>("Budget")
+                        .HasColumnType("numeric");
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("integer");
+
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
@@ -264,10 +259,7 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Property<int>("Month")
                         .HasColumnType("integer");
 
-                    b.Property<decimal?>("Progress")
-                        .HasColumnType("numeric");
-
-                    b.Property<decimal?>("Target")
+                    b.Property<decimal?>("TotalSpent")
                         .HasColumnType("numeric");
 
                     b.Property<Guid?>("UpdatedBy")
@@ -283,7 +275,63 @@ namespace MyExpenses.Infrastructure.Migrations
 
                     b.HasIndex("AppUserId");
 
+                    b.HasIndex("CategoryId");
+
                     b.ToTable("Goals");
+                });
+
+            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.Activity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivityStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("ActivityStatusChangedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("ActivityStatusChangedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("CreatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("TransactionId")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid?>("UpdatedBy")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("Activities");
                 });
 
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.GroupExpenseShare", b =>
@@ -396,7 +444,7 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.ToTable("GroupExpenses");
                 });
 
-            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.PersonalExpenses", b =>
+            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.Transaction", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -404,7 +452,10 @@ namespace MyExpenses.Infrastructure.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AccountId")
+                    b.Property<int>("AccountId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("ActivityId")
                         .HasColumnType("integer");
 
                     b.Property<int>("ActivityStatus")
@@ -419,13 +470,6 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Property<decimal>("Amount")
                         .HasColumnType("numeric");
 
-                    b.Property<int>("AppUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("Category")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<Guid>("CreatedBy")
                         .HasColumnType("uuid");
 
@@ -435,11 +479,7 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("Type")
+                    b.Property<int>("TransactionType")
                         .HasColumnType("integer");
 
                     b.Property<Guid?>("UpdatedBy")
@@ -452,9 +492,10 @@ namespace MyExpenses.Infrastructure.Migrations
 
                     b.HasIndex("AccountId");
 
-                    b.HasIndex("AppUserId");
+                    b.HasIndex("ActivityId")
+                        .IsUnique();
 
-                    b.ToTable("PersonalExpenses");
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.UserExpense", b =>
@@ -919,9 +960,6 @@ namespace MyExpenses.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<double>("MonthlyBudget")
-                        .HasColumnType("double precision");
-
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
                         .HasColumnType("text");
@@ -935,12 +973,10 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("UserIdentityId")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserIdentityId");
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("AppUsers");
                 });
@@ -1007,17 +1043,6 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Navigation("AppUser");
                 });
 
-            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Common.Category", b =>
-                {
-                    b.HasOne("MyExpenses.Domain.core.Entities.User.AppUser", "AppUser")
-                        .WithMany("Categories")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("AppUser");
-                });
-
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Common.Goal", b =>
                 {
                     b.HasOne("MyExpenses.Domain.core.Entities.User.AppUser", "AppUser")
@@ -1026,7 +1051,26 @@ namespace MyExpenses.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MyExpenses.Domain.core.Entities.Common.Category", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("AppUser");
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.Activity", b =>
+                {
+                    b.HasOne("MyExpenses.Domain.core.Entities.User.AppUser", "User")
+                        .WithMany("Activities")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.GroupExpenseShare", b =>
@@ -1071,21 +1115,21 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Navigation("Payer");
                 });
 
-            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.PersonalExpenses", b =>
+            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.Transaction", b =>
                 {
                     b.HasOne("MyExpenses.Domain.core.Entities.Common.Account", "Account")
                         .WithMany("PersonalExpenses")
-                        .HasForeignKey("AccountId");
-
-                    b.HasOne("MyExpenses.Domain.core.Entities.User.AppUser", "User")
-                        .WithMany("PersonalExpenses")
-                        .HasForeignKey("AppUserId")
+                        .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MyExpenses.Domain.core.Entities.Expenses.Activity", "Activity")
+                        .WithOne("Transaction")
+                        .HasForeignKey("MyExpenses.Domain.core.Entities.Expenses.Transaction", "ActivityId");
+
                     b.Navigation("Account");
 
-                    b.Navigation("User");
+                    b.Navigation("Activity");
                 });
 
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.UserExpense", b =>
@@ -1173,9 +1217,9 @@ namespace MyExpenses.Infrastructure.Migrations
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.User.AppUser", b =>
                 {
                     b.HasOne("MyExpenses.Domain.core.Entities.User.AppIdentityUser", "UserIdentity")
-                        .WithMany()
-                        .HasForeignKey("UserIdentityId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .WithOne()
+                        .HasForeignKey("MyExpenses.Domain.core.Entities.User.AppUser", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("UserIdentity");
@@ -1184,6 +1228,12 @@ namespace MyExpenses.Infrastructure.Migrations
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Common.Account", b =>
                 {
                     b.Navigation("PersonalExpenses");
+                });
+
+            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.Activity", b =>
+                {
+                    b.Navigation("Transaction")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.GroupExpenses", b =>
@@ -1204,7 +1254,7 @@ namespace MyExpenses.Infrastructure.Migrations
                 {
                     b.Navigation("Accounts");
 
-                    b.Navigation("Categories");
+                    b.Navigation("Activities");
 
                     b.Navigation("FromContacts");
 
@@ -1217,8 +1267,6 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Navigation("GroupExpenseShares");
 
                     b.Navigation("GroupMemberships");
-
-                    b.Navigation("PersonalExpenses");
 
                     b.Navigation("ToContacts");
 

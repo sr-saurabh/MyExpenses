@@ -1,19 +1,15 @@
+:host{
+    --text-primary-color:#14b8a6;
+}
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  background:url(../../Assets/login-page-background.jpg);
-  background-size: cover;
-  background-repeat: no-repeat;
   min-height: 100vh;
 }
-
-.form-description{
-    background:url(../../Assets/login-page-background.jpg);
-    max-width: 30rem;
-    min-height: 15rem;
-    background-size: cover;
-    padding-top: 10%;
+.forgot-password{
+    color: var(--text-primary-color);
 }
 
 .form-container{
@@ -22,7 +18,25 @@
     border-radius: 1rem; */
     box-shadow: 0 0 10px 0 rgba(0,0,0,0.1);
     font-size: 1.2rem;
+    width: clamp(300px, 30%, 600px);
 }
 .password-container .p-icon-field{
     width: 100%;
+
+    /* padding: 1rem;
+    background: gray;
+    width: 150%; */
+    .p-input-icon{
+        margin-top: -0.8rem;
+    }
 }
+/* .google-login iframe{
+    height: unset !important;
+    width: unset !important;
+}
+.google-login div[role="button"]{
+    padding: 1rem !important;
+    background: gray !important;
+    width: 100% !important;
+} */
+

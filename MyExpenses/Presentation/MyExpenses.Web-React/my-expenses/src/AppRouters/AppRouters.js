@@ -1,24 +1,28 @@
 import { Routes, Route } from 'react-router-dom';
 import Login from '../Pages/Login/Login';
-import Dashboard from '../Pages/Dashboard/Dashboard';
+import Overview from '../Pages/Overview/Overview.tsx';
 import Register from '../Pages/Register/Register';
 import Friends from '../Pages/Friends/Friends';
 import Groups from '../Pages/Groups/Groups';
 import Profile from '../Pages/Profile/Profile';
-import MyExpenses from '../Pages/MyExpenses/MyExpenses';
+import Transactions from '../Pages/Transactions/Transactions';
+import Balances from '../Pages/balances/balances.tsx';
+import AccountDetails from '../Pages/AccountDetails/AccountDetails.tsx';
 
 const AppRouters = () => {
     return (
         <div>
             <Routes>
-                <Route path="/" element={<Login />} />
+                <Route path="/"  element={<Overview />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register-user" element={<Register />} />
-                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/overview" element={<Overview />} />
+                <Route path="/balances" element={<Balances />} />
+                <Route path="/balances/account/:accountId" element={<AccountDetails />} />
                 <Route path="/friends" element={<Friends />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path='my-profile' element={<Profile />} />
-                <Route path='my-expenses' element={<MyExpenses />} />
+                <Route path='Transactions' element={<Transactions />} />
             </Routes>
         </div>
     );

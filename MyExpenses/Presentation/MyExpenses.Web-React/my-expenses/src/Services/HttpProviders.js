@@ -20,18 +20,19 @@ api.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
-export const get= (endpoint) => {
-    return api.get(endpoint);
+
+export const get = (endpoint) => {
+  return api.get(endpoint);
 }
 
 export const post = (endpoint, data) => {
-    return api.post(endpoint, data);
+  return api.post(endpoint, data);
 }
 
 export const put = (endpoint, data) => {
-    return api.put(endpoint, data);
+  return api.put(endpoint, data);
 }
 
- export const remove = (endpoint) => {
-    return api.delete(endpoint);
+export const remove = (endpoint) => {
+  return api.delete(endpoint);
 }

@@ -39,7 +39,6 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories
                                         .SetProperty(s => s.LastName, appUser.LastName)
                                         .SetProperty(s => s.FullName, $"{appUser.FirstName} {appUser.LastName}")
                                         .SetProperty(s => s.PhoneNumber, appUser.PhoneNumber)
-                                        .SetProperty(s => s.MonthlyBudget, appUser.MonthlyBudget)
                                         .SetProperty(s => s.Avatar, appUser.Avatar)
                                     );
             return updatedCount > 0;

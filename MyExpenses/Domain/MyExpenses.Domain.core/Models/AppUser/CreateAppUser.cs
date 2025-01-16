@@ -14,6 +14,5 @@ namespace MyExpenses.Domain.core.Models.AppUser
         public string LastName { get; set; }
         public string? Avatar { get; set; }
         public string PhoneNumber { get; set; }
-        public Double MonthlyBudget { get; set; }
     }
 }

@@ -1,27 +1,32 @@
-import React, { forwardRef, useState, useEffect } from 'react';
-import './Login.css';
-import { InputText } from "primereact/inputtext";
-import { FloatLabel } from "primereact/floatlabel";
-import { Button } from 'primereact/button';
-import { Password } from 'primereact/password';
 import { GoogleLogin } from '@react-oauth/google';
+import { Button } from 'primereact/button';
 import { Divider } from 'primereact/divider';
-import { jwtDecode } from "jwt-decode";
+import { InputText } from "primereact/inputtext";
+import { Password } from 'primereact/password';
+import React, { useEffect, useRef, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { register, login, googleLogin } from '../../Services/authService';
-import { getCurrentUserProfile } from '../../Services/userServices';
+import { googleLogin, login, register } from '../../Services/authService.tsx';
+import { getCurrentUserProfile } from '../../Services/userServices.tsx';
+import './Login.css';
+
+import { Toast } from 'primereact/toast';
+import UserContext from '../../Context/UserContext.ts';
 
 const Login = () => {
+    const googleLoginRef = useRef(null);
+    const toast = useRef(null);
 
     const initialFormData = {
         email: '',
         password: '',
         confirmPassword: ''
     };
+
     const [formData, setFormData] = useState(initialFormData);
     const [formError, setFormError] = useState({});
     const [isSignup, setSignup] = useState(false);
     const navigate = useNavigate();
+    const { user, setUser } = useContext(UserContext);
 
     const passwordHeader = <div className="font-bold mb-3">Pick a password</div>;
     const passwordFooter = (
@@ -50,7 +55,7 @@ const Login = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        const formError = vlaidateForm(formData);
+        const formError = validateForm(formData);
         if (formError) {
             setFormError(formError);
             if (Object.keys(formError).length > 0)
@@ -69,8 +74,18 @@ const Login = () => {
         }
         else {
             login(formData).then((response) => {
+                if (response.data.autCode === 0) {
+                    toast.current.show({ severity: 'error', summary: 'Login Failed', detail: response.data.message, life: 3000 });
+                    setSignup(true);
+                    return;
+                }
+                else {
+                    toast.current.show({ severity: 'success', summary: 'Login Successful', detail: response.data.message, life: 3000 });
+                    getProfileData();
+                    // navigate('/overview')
+                }
                 const token = response.data.data;
-                console.log(token);
+
                 localStorage.setItem('token', token);
                 getProfileData();
             }).catch((error) => {
@@ -81,21 +96,34 @@ const Login = () => {
     };
 
     const getProfileData = () => {
-        getCurrentUserProfile(true).then((response) => {
-            const profileData = response.data;
-            localStorage.setItem('profileData', JSON.stringify(profileData));
-
-            if (profileData == null)
-                navigate('/register-user');
-            else
-                navigate('/dashboard');
-        }).catch((error) => {
-            console.log(error);
-        });
+        // if (user != null) {
+        //     navigate('/');
+        //     return;
+        // }
+        const profileData = localStorage.getItem('profileData');
+        if (profileData == null || profileData === undefined) {
+            getCurrentUserProfile(true).then((response) => {
+                if (response.status === 204) {
+                    toast.current.show({ severity: 'warning', summary: 'Login Success', detail: "Profile not found", life: 3000 });
+                    navigate('/register-user');
+                }
+                else {
+                    const profileData = response.data;
+                    setUser(response.data);
+                    localStorage.setItem('profileData', JSON.stringify(profileData));
+                    navigate('/');
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+        else{
+            navigate('/');
+        }
     }
 
 
-    const vlaidateForm = (formData) => {
+    const validateForm = (formData) => {
         const formError = {};
         const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
         const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
@@ -131,14 +159,14 @@ const Login = () => {
         //const decodedHeader = jwtDecode(credentials);
         //console.log(decodedHeader);
         var googleCredentials = {
-            accessToken: credentials,   
+            accessToken: credentials,
         }
-        
+
         googleLogin(googleCredentials).then((response) => {
             const token = response.data.data;
             console.log(token);
             localStorage.setItem('token', token);
-            navigate('/dashboard');
+            navigate('/overview');
         }).catch((error) => {
             console.log(error);
         }
@@ -153,47 +181,47 @@ const Login = () => {
 
     return (
         <div className='login-container'>
+            <Toast ref={toast} />
             <div className='form-container d-flex flex-column bg-white rounded-3 opacity-75 overflow-hidden'>
-                <div className='form-description d-flex flex-column justify-content-end'>
-                    <div className='p-3 pb-0 fw-medium'>
-                        ExpenseManager is your ultimate tool for effortlessly managing and sharing expenses. Whether youre tracking personal finances, splitting bills with friends, or managing group expenses, ExpenseMate makes it easy. With a user-friendly interface, you can categorize your spending, set budgets, and view insightful reports to stay on top of your finances.
-                    </div>
-                    <div className='p-2 link'>
-                        <Button label={isSignup ? "Login" : "Signup"} severity='info' raised className='text-black rounded-3 opacity-75' size='large' onClick={() => setSignup(!isSignup)} />
-                    </div>
+                <div className='d-flex justify-content-center text-teal align-items-end user-select-none'>
+                    <span className='fs-1 fw-bold'>MY E </span>
+                    <span className='fs-1 fw-medium'>xpenses</span>
                 </div>
                 <div className='p-3'>
                     <form className='d-flex flex-column  justify-content-center' onSubmit={handleSubmit}>
                         <div className='mb-3 mt-2'>
-                            <FloatLabel>
-                                <InputText className='w-100' id="email" value={formData.email} invalid={!formError.email === ""} onChange={(e) => handleChange(e)} />
-                                <label htmlFor="email">Email</label>
-                            </FloatLabel>
+                            <div className="flex flex-column gap-2">
+                                <label htmlFor="email" className='text-black fw-medium'>Email</label>
+                                <InputText className='w-100' id="email" value={formData.email} invalid={!formError.email === ""} placeholder='hello@example.com' onChange={(e) => handleChange(e)} />
+                            </div>
                             <div className='text-danger'>{formError?.email}</div>
                         </div>
                         <div className='my-3 password-container'>
-                            <FloatLabel className='w-100'>
-                                <Password className='w-100' inputClassName='w-100' inputId="password" invalid={!formError.password === ""} value={formData.password} onChange={(e) => handleChange(e)} toggleMask header={passwordHeader} footer={passwordFooter} feedback={isSignup} />
-                                <label htmlFor="password">Password</label>
-                            </FloatLabel>
+                            <div className="flex flex-column gap-2">
+                                <label htmlFor="password" className='text-black fs-6 d-flex justify-content-between'>
+                                    <span className='text-black fw-medium'>Password</span>
+                                    <span className='cursor-pointer l-text-primary forgot-password'>Forgot password?</span>
+                                </label>
+                                <Password className='w-100' inputClassName='w-100' placeholder='Password...' inputId="password" invalid={!formError.password === ""} value={formData.password} onChange={(e) => handleChange(e)} toggleMask header={passwordHeader} footer={passwordFooter} feedback={isSignup} />
+                            </div>
                             <div className='text-danger'>{formError?.password}</div>
                         </div>
                         {isSignup &&
                             <div className='my-3 password-container'>
-                                <FloatLabel className='w-100'>
-                                    <Password className='w-100' inputClassName='w-100' inputId="confirmPassword" feedback={false} value={formData.confirmPassword} onChange={(e) => handleChange(e)} />
-                                    <label htmlFor="confirmPassword">Confirm Password</label>
-                                </FloatLabel>
+                                <div className="flex flex-column gap-2">
+                                    <label htmlFor="password" className='text-black fs-6'>Password</label>
+                                    <Password className='w-100' inputClassName='w-100' inputId="confirmPassword" placeholder='Confirm password...' feedback={false} value={formData.confirmPassword} onChange={(e) => handleChange(e)} />
+                                </div>
                                 <div className='text-danger'>{formError?.confirmPassword}</div>
 
                             </div>
                         }
-                        <Button label="Submit" severity='info' className='rounded-3' iconPos='right' />
+                        <Button label={isSignup ? 'Sign up' : 'Login'} className='rounded-3' iconPos='right' />
                     </form>
                     <Divider align="center">
                         <span className="">OR</span>
                     </Divider>
-                    <div className='d-flex justify-content-center'>
+                    <div className='d-flex justify-content-center google-login' ref={googleLoginRef}>
                         <GoogleLogin
                             onSuccess={credentialResponse => {
                                 onGoogleLogin(credentialResponse);
@@ -203,6 +231,17 @@ const Login = () => {
                             }}
                         />
                     </div>
+                    <div className='d-flex justify-content-center mt-3'>
+
+                        {isSignup &&
+                            <p><span className='text-body-tertiary'>Already have an account? </span> <span className='text-teal cursor-pointer' onClick={() => setSignup(!isSignup)} >Sign in here</span></p>
+                        }
+                        {!isSignup &&
+                            <p><span className='text-body-tertiary'>Don't have an account? </span><span className='text-teal cursor-pointer' onClick={() => setSignup(!isSignup)}>Create an account</span></p>
+                        }
+                    </div>
+                    {/* <Button label={isSignup ? "Login" : "Signup"} severity='info' raised className='text-black rounded-3 opacity-75' size='large' onClick={() => setSignup(!isSignup)} /> */}
+
                 </div>
             </div>
         </div>

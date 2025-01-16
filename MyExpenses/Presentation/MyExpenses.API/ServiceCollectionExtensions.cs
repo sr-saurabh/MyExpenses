@@ -83,11 +83,14 @@ namespace MyExpenses.API
             services.AddScoped<IAuthContract, AuthProvider>()
                     .AddScoped<IGroupContract, GroupProvider>()
                     .AddScoped<IGroupMembershipContract, GroupMembershipProvider>()
-                    .AddScoped<IPersonalExpenseContract, PersonalExpenseProvider>()
+                    .AddScoped<ITransactionContract, TransactionProvider>()
                     .AddScoped<IContactContract, ContactProvider>()
                     .AddScoped<IGroupExpenseShareContract, ExpenseShareProvider>()
                     .AddScoped<IGroupExpenseContract, GroupExpenseProvider>()
-                    .AddScoped<IAppUserContract, AppUserProvider>();
+                    .AddScoped<IAppUserContract, AppUserProvider>()
+                    .AddScoped<IAccountContract, AccountProvider>()
+                    .AddScoped < IGoalContract, GoalProvider>()
+                    .AddScoped<ICategoryContract, CategoryProvider>();
             return services;
 
         }
@@ -97,10 +100,14 @@ namespace MyExpenses.API
                     //.AddScoped(typeof(IAuditableRepo<>), typeof(AuditableRepo<>))
                     .AddScoped<IAppUserRepo, AppUserRepo>()
                     .AddScoped<IGroupMembershipRepo, GroupMembershipRepo>()
-                    .AddScoped<IPersonalExpenseRepo, PersonalExpenseRepo>()
+                    .AddScoped<ITransactionRepo, TransactionRepo>()
                     .AddScoped<IContactRepo, ContactRepo>()
                     .AddScoped<IGroupExpenseRepo, GroupExpenseRepo>()
                     .AddScoped<IGroupExpenseShareRepo, GroupExpenseShareRepo>()
+                    .AddScoped<ICategoryRepo, CategoryRepo>()   
+                    .AddScoped<IAccountRepo, AccountRepo>()   
+                    .AddScoped<IGoalRepo, GoalRepo>()
+                    .AddScoped<IActivityRepo, ActivityRepo>()
                     .AddScoped<IGroupRepo, GroupRepo>();
             ;
             return services;

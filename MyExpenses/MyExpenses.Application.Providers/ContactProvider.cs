@@ -85,7 +85,7 @@ namespace MyExpenses.Application.Providers
             };
 
             var res = await _contactRepo.CreateAsync(contact);
-            return res;
+            return res!=null;
         }
 
         /// <summary>

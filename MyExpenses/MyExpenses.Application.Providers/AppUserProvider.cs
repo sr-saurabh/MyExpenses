@@ -110,7 +110,6 @@ namespace MyExpenses.Application.Providers
                 .SetProperty(s => s.LastName, user.LastName)
                 .SetProperty(s => s.FullName, $"{user.FirstName} {user.LastName}")
                 .SetProperty(s => s.PhoneNumber, user.PhoneNumber)
-                .SetProperty(s => s.MonthlyBudget, user.MonthlyBudget)
                 .SetProperty(s => s.Avatar, user.Avatar));
             return isUpdated;
         }

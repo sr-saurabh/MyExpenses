@@ -42,7 +42,7 @@ namespace MyExpenses.Application.Providers
                     // Updating the balance in the contact table
                     var isBalanceUpdated = await UpdateContactBalance(userExpense.FromUserId, userExpense.ToUserId, userExpense.Amount, 0);
 
-                    if (!result || !isBalanceUpdated)
+                    if (result == null || !isBalanceUpdated)
                     {
                         transaction.Dispose(); // Rollback the transaction
                         return null;

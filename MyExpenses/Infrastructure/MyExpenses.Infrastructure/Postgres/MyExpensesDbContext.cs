@@ -45,7 +45,12 @@ namespace MyExpenses.Infrastructure.Postgres
         /// <summary>
         /// Gets or sets the <see cref="DbSet{PersonalExpenses}"/> representing the personal expenses.
         /// </summary>
-        public DbSet<PersonalExpenses> PersonalExpenses { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
+        
+        /// <summary>
+        /// Gets or sets the <see cref="DbSet{PersonalExpenses}"/> representing the personal expenses.
+        /// </summary>
+        public DbSet<Activity> Activities { get; set; }
 
         /// <summary>
         /// Gets or sets the <see cref="DbSet{UserExpense}"/> representing the user expenses.
@@ -105,7 +110,8 @@ namespace MyExpenses.Infrastructure.Postgres
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.OnAppUserCreating()
-                        .OnPersonalExpenseCreating()
+                        .OnTransactionCreating()
+                        .OnActivityCreating()
                         .OnGroupExpenseCreating()
                         .OnUserExpenseCreating()
                         .OnGroupExpenseShareCreating()

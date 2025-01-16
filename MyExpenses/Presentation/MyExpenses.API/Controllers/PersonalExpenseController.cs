@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyExpenses.Application.Abstraction;
 using MyExpenses.Domain.core.Models.Expense;
 using MyExpenses.Domain.core.Models.ExpenseFilter;
@@ -10,15 +11,16 @@ namespace MyExpenses.API.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class PersonalExpenseController : ControllerBase
     {
-        private readonly IPersonalExpenseContract _personalExpenseContract;
+        private readonly ITransactionContract _personalExpenseContract;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PersonalExpenseController"/> class.
         /// </summary>
         /// <param name="personalExpenseContract">The contract for managing personal expenses.</param>
-        public PersonalExpenseController(IPersonalExpenseContract personalExpenseContract)
+        public PersonalExpenseController(ITransactionContract personalExpenseContract)
         {
             _personalExpenseContract = personalExpenseContract;
         }
@@ -78,7 +80,7 @@ namespace MyExpenses.API.Controllers
         /// <param name="value">The details of the expense to create.</param>
         /// <returns>A result indicating the success or failure of the expense creation.</returns>
         [HttpPost]
-        public async Task<IActionResult> CreateExpense([FromBody] CreatePersonalExpense value)
+        public async Task<IActionResult> CreateExpense([FromBody] CreateActivity value)
         {
             var result = await _personalExpenseContract.CreatePersonalExpenses(value);
             return Ok(result);
@@ -91,7 +93,7 @@ namespace MyExpenses.API.Controllers
         /// <param name="value">The updated details of the expense.</param>
         /// <returns>A result indicating the success or failure of the expense update.</returns>
         [HttpPut("{expenseId}")]
-        public async Task<IActionResult> UpdateExpense(int expenseId, [FromBody] UpdatePersonalExpense value)
+        public async Task<IActionResult> UpdateExpense(int expenseId, [FromBody] UpdateActivity value)
         {
             var result = await _personalExpenseContract.UpdatePersonalExpense(value);
             return Ok(result);
@@ -118,7 +120,20 @@ namespace MyExpenses.API.Controllers
         [HttpGet("categories/{appUserId}")]
         public async Task<IActionResult> GetCategories(int appUserId)
         {
-            var res=await _personalExpenseContract.GetCategories(appUserId);
+            var res = await _personalExpenseContract.GetCategories(appUserId);
+            return Ok(res);
+        }
+
+        /// <summary>
+        /// Fetch all the expenses for a week
+        /// </summary>
+        /// <param name="appUserId"></param>
+        /// <returns></returns>
+
+        [HttpGet("weekly-summary/{appUserId}")]
+        public async Task<IActionResult> GetWeeklySummary(int appUserId, bool isCurrentWeek)
+        {
+            var res = await _personalExpenseContract.GetWeeklyExpense(appUserId, isCurrentWeek);
             return Ok(res);
         }
     }

@@ -399,7 +399,7 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.ToTable("GroupExpenses");
                 });
 
-            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.PersonalExpenses", b =>
+            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.Transactions", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -457,7 +457,7 @@ namespace MyExpenses.Infrastructure.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("PersonalExpenses");
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.UserExpense", b =>
@@ -1074,14 +1074,14 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Navigation("Payer");
                 });
 
-            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.PersonalExpenses", b =>
+            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.Transactions", b =>
                 {
                     b.HasOne("MyExpenses.Domain.core.Entities.Common.Account", "Account")
-                        .WithMany("PersonalExpenses")
+                        .WithMany("Transactions")
                         .HasForeignKey("AccountId");
 
                     b.HasOne("MyExpenses.Domain.core.Entities.User.AppUser", "User")
-                        .WithMany("PersonalExpenses")
+                        .WithMany("Transactions")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1186,7 +1186,7 @@ namespace MyExpenses.Infrastructure.Migrations
 
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Common.Account", b =>
                 {
-                    b.Navigation("PersonalExpenses");
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.GroupExpenses", b =>
@@ -1221,7 +1221,7 @@ namespace MyExpenses.Infrastructure.Migrations
 
                     b.Navigation("GroupMemberships");
 
-                    b.Navigation("PersonalExpenses");
+                    b.Navigation("Transactions");
 
                     b.Navigation("ToContacts");
 

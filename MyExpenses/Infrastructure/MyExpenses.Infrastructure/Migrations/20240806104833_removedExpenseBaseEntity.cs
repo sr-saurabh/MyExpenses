@@ -94,7 +94,7 @@ namespace MyExpenses.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PersonalExpenses",
+                name: "Transactions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -136,7 +136,7 @@ namespace MyExpenses.Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_PersonalExpenses_AppUserId",
-                table: "PersonalExpenses",
+                table: "Transactions",
                 column: "AppUserId");
 
             migrationBuilder.AddForeignKey(
@@ -159,7 +159,7 @@ namespace MyExpenses.Infrastructure.Migrations
                 name: "GroupExpenses");
 
             migrationBuilder.DropTable(
-                name: "PersonalExpenses");
+                name: "Transactions");
 
             migrationBuilder.AddColumn<int>(
                 name: "AppUserId",

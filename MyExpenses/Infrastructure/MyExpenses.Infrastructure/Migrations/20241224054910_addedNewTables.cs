@@ -14,7 +14,7 @@ namespace MyExpenses.Infrastructure.Migrations
         {
             migrationBuilder.AddColumn<int>(
                 name: "AccountId",
-                table: "PersonalExpenses",
+                table: "Transactions",
                 type: "integer",
                 nullable: true);
 
@@ -111,7 +111,7 @@ namespace MyExpenses.Infrastructure.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_PersonalExpenses_AccountId",
-                table: "PersonalExpenses",
+                table: "Transactions",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
@@ -131,7 +131,7 @@ namespace MyExpenses.Infrastructure.Migrations
 
             migrationBuilder.AddForeignKey(
                 name: "FK_PersonalExpenses_Accounts_AccountId",
-                table: "PersonalExpenses",
+                table: "Transactions",
                 column: "AccountId",
                 principalTable: "Accounts",
                 principalColumn: "Id");
@@ -142,7 +142,7 @@ namespace MyExpenses.Infrastructure.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_PersonalExpenses_Accounts_AccountId",
-                table: "PersonalExpenses");
+                table: "Transactions");
 
             migrationBuilder.DropTable(
                 name: "Accounts");
@@ -155,11 +155,11 @@ namespace MyExpenses.Infrastructure.Migrations
 
             migrationBuilder.DropIndex(
                 name: "IX_PersonalExpenses_AccountId",
-                table: "PersonalExpenses");
+                table: "Transactions");
 
             migrationBuilder.DropColumn(
                 name: "AccountId",
-                table: "PersonalExpenses");
+                table: "Transactions");
         }
     }
 }

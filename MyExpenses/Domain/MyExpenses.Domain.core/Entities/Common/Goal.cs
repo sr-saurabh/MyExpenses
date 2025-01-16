@@ -7,20 +7,19 @@ namespace MyExpenses.Domain.core.Entities.Common
 {
     public class Goal : AuditableEntity
     {
-        [Required]
         public int AppUserId { get; set; }
 
-        [Required]
+        public int CategoryId { get; set; }
+
         public int Year { get; set; }
 
-        [Required]
         public int Month { get; set; }
 
-        public decimal? Target { get; set; } // Optional target value for the goal
+        public decimal? Budget { get; set; }
 
-        public decimal? Progress { get; set; } // Optional progress tracking value
+        public decimal? TotalSpent { get; set; }
 
-        [ForeignKey(nameof(AppUserId))]
-        public AppUser AppUser { get; set; } // Navigation property
+        public AppUser AppUser { get; set; }
+        public Category Category { get; set; }
     }
 }

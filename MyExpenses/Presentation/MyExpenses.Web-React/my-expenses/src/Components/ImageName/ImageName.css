@@ -10,3 +10,9 @@
 .bg-megenta{
     background-color: rgb(136, 11, 11);
 }
+.name-container{
+    height: 40px;
+    width: 40px;
+    height: 40px;
+    text-align: center;
+}

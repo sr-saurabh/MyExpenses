@@ -14,9 +14,9 @@ namespace MyExpenses.Domain.core.MappingProfile
     {
         public PersonalExpenseMapperProfile()
         {
-            CreateMap<PersonalExpenses, CreatePersonalExpense>().ReverseMap();
-            CreateMap<PersonalExpenses, UpdatePersonalExpense>().ReverseMap();
-            CreateMap<PersonalExpenses, ApiPersonalExpense>().ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type.ToString()));
+            CreateMap<Transaction, CreateActivity>().ReverseMap();
+            CreateMap<Transaction, UpdateActivity>().ReverseMap();
+            CreateMap<Transaction, ApiActivity>().ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.TransactionType.ToString()));
 
 
         }

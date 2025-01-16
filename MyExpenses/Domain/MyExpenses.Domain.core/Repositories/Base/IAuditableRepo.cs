@@ -28,7 +28,7 @@ namespace MyExpenses.Domain.core.Repositories.Base
         /// </summary>
         /// <param name="entity">The entity to be created.</param>
         /// <returns>True if the entity was successfully created; otherwise, false.</returns>
-        Task<bool> CreateAsync(T entity);
+        Task<T> CreateAsync(T entity);
 
         /// <summary>
         /// Asynchronously updates entities in the database that match the specified filter expression.

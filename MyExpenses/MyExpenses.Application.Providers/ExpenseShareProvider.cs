@@ -52,7 +52,8 @@ namespace MyExpenses.Application.Providers
                             ReceiverId = item.ReceiverId,
                             GroupExpenseId = groupExpenseId
                         };
-                        isAdded &= await _groupExpenseShareRepo.CreateAsync(expenseShare);
+                        var isGroupExpenseShareCreated = await _groupExpenseShareRepo.CreateAsync(expenseShare);
+                        isAdded &=isGroupExpenseShareCreated!=null;
 
                         var isBalanceUpdated = await _contactRepo.UpdateAsync(c => c.FromUserId == payerId && c.ToUserId == item.ReceiverId,
                                      c => c.SetProperty(c => c.Balance, c => c.Balance + item.ShareAmount));

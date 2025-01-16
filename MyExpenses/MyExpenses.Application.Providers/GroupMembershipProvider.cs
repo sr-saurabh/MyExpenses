@@ -61,7 +61,7 @@ namespace MyExpenses.Application.Providers
 
             UserGroupMembership userGroupMembership = new() { GroupId = groupId, AppUserId = userId };
             var result = await _groupMembershipRepo.CreateAsync(userGroupMembership);
-            return result;
+            return result!=null;
         }
 
         /// <summary>

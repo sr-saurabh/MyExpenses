@@ -8,6 +8,7 @@ import { PrimeReactProvider, PrimeReactContext } from 'primereact/api';
 import "primereact/resources/themes/lara-light-teal/theme.css";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { BrowserRouter } from 'react-router-dom';
+import UserContextProvider from './Context/UserContextProvider.tsx';
 
 
 
@@ -16,10 +17,13 @@ root.render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId="13612280549-t9t3daa1pkqu8uldfhai2ois973hlaai.apps.googleusercontent.com">
       <BrowserRouter>
-        <App />
+        <UserContextProvider>
+
+          <App />
+        </UserContextProvider>
       </BrowserRouter>
     </GoogleOAuthProvider>
-  </React.StrictMode>
+  </React.StrictMode >
 );
 
 // // If you want to start measuring performance in your app, pass a function

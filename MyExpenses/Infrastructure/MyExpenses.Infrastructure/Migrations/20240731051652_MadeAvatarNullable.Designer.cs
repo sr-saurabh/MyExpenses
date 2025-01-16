@@ -617,7 +617,7 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue("GroupExpenses");
                 });
 
-            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.PersonalExpenses", b =>
+            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.Transactions", b =>
                 {
                     b.HasBaseType("MyExpenses.Domain.core.Entities.Base.ExpenseBaseEntity");
 
@@ -629,7 +629,7 @@ namespace MyExpenses.Infrastructure.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.HasDiscriminator().HasValue("PersonalExpenses");
+                    b.HasDiscriminator().HasValue("Transactions");
                 });
 
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.UserExpense", b =>
@@ -808,10 +808,10 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.Navigation("Payer");
                 });
 
-            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.PersonalExpenses", b =>
+            modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.Transactions", b =>
                 {
                     b.HasOne("MyExpenses.Domain.core.Entities.User.AppUser", "User")
-                        .WithMany("PersonalExpenses")
+                        .WithMany("Transactions")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -859,7 +859,7 @@ namespace MyExpenses.Infrastructure.Migrations
 
                     b.Navigation("GroupMemberships");
 
-                    b.Navigation("PersonalExpenses");
+                    b.Navigation("Transactions");
 
                     b.Navigation("ToSettlements");
 

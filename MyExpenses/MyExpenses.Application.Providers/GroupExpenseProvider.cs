@@ -43,8 +43,8 @@ namespace MyExpenses.Application.Providers
             var groupExpense = _mapper.Map<GroupExpenses>(groupExpenseRequest);
             var res = await _groupExpenseRepo.CreateAsync(groupExpense);
 
-            res &= await _groupExpenseShareContract.AddGroupExpenseShare(groupExpenseRequest.ExpenseShare, groupExpense.Id, groupExpense.PayerId);
-            return res;
+            var isGroupExpenseShareAdde= await _groupExpenseShareContract.AddGroupExpenseShare(groupExpenseRequest.ExpenseShare, groupExpense.Id, groupExpense.PayerId);
+            return res!=null && isGroupExpenseShareAdde;
         }
 
         /// <summary>

@@ -9,11 +9,10 @@ namespace MyExpenses.Infrastructure.Postgres.ModelCreationHooks
         public static ModelBuilder OnCategoryCreating(this ModelBuilder modelBuilder)
         {
             modelBuilder.OnAuditableEntityCreating<AppUser>();
-            modelBuilder.Entity<Category>()
-                        .HasOne(category => category.AppUser)
-                        .WithMany(user => user.Categories)
-                        .HasForeignKey(category => category.AppUserId);
-
+            //modelBuilder.Entity<Category>()
+            //            .HasOne(category => category.AppUser)
+            //            .WithMany(user => user.Categories)
+            //            .HasForeignKey(category => category.AppUserId);
             return modelBuilder;
         }
     }

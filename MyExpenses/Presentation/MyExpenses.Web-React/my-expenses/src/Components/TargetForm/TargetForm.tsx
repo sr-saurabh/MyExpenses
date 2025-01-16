@@ -1,0 +1,105 @@
+import React, { FC, useContext, useEffect, useState } from 'react';
+import './TargetForm.module.css';
+import { InputNumber, InputNumberChangeEvent } from 'primereact/inputnumber';
+import { InputText } from 'primereact/inputtext';
+import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
+import { Goal, UpdateGoal } from '../../Models/Goals';
+import { Button } from 'primereact/button';
+import { updateGoal } from '../../Services/categoryService';
+import UserContext from '../../Context/UserContext.ts';
+
+interface TargetFormProps {
+  amount?: number;
+  category?: string;
+  goals: Goal[],
+  goalId?: number
+  onSubmit: (data: { updateGoal: UpdateGoal }) => void;
+}
+interface Category {
+  name: string;
+  id: number;
+}
+
+const TargetForm: FC<TargetFormProps> = ({ amount = 0, category, goals, onSubmit }: TargetFormProps) => {
+  const [targetAmount, setTargetAmount] = useState<number>(amount);
+  const [currentTargetAmount, setCurrentTargetAmount] = useState<number>(0);
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
+  const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
+  const { user } = useContext(UserContext);
+
+
+  const categories: Category[] = [
+    { name: 'Transportation', id: 1 },
+    { name: 'Entertainment', id: 2 },
+    { name: 'Housing', id: 3 },
+    { name: 'Food', id: 4 },
+    { name: 'Shopping', id: 5 },
+    { name: 'Other', id: 6 }
+  ];
+  
+  useEffect(() => {
+    const goal = goals.find(g => g.categoryName === category);
+    setSelectedGoal(goal ?? null);
+  }, [category]);
+
+  useEffect(() => {
+    const goal = goals.find(g => g.categoryName === selectedCategory?.name);
+    setSelectedGoal(goal ?? null);
+    setTargetAmount(goal?.budget ?? 0);
+  }, [selectedGoal, selectedCategory]);
+
+  const syncCurrentTargetAmount = (amount: number) => {
+    setCurrentTargetAmount(amount);
+  }
+
+  const handleSubmit = () => {
+    const updatedGoal: UpdateGoal = {
+      userId: user.id,
+      id: selectedGoal?.id ?? 0,
+      budget: currentTargetAmount,
+      month: 0,
+      year: 0,
+      categoryId: selectedCategory?.id ?? 6
+    };
+    onSubmit({ updateGoal: updatedGoal });
+  }
+
+  return (
+    <div className=''>
+      {category !== undefined ?
+        (
+          <div className='mb-3 mt-2'>
+            <div className="flex flex-column gap-2">
+              <label htmlFor="category" className='text-black fw-medium'>Category</label>
+              <InputText id="category" className='w-100' value={category} disabled={true} />
+            </div>
+          </div>
+        ) : (
+          <div className='mb-3 mt-2 '>
+            <label htmlFor="currentTargetAmount" className='text-black fw-medium'>Category</label>
+            <Dropdown value={selectedCategory} focusOnHover={false} panelClassName='category-dropdown' onChange={(e: DropdownChangeEvent) => setSelectedCategory(e.value)} options={categories} optionLabel="name"
+              placeholder="Select a Category" className="w-100 md:w-14rem" />
+          </div>
+        )
+      }
+      <div className='mb-3 mt-2'>
+        <div className="flex flex-column gap-2">
+          <label htmlFor="target" className='text-black fw-medium'>Target Amount</label>
+          <InputNumber id="target" className='w-100' value={targetAmount} prefix="Rs. " disabled={true} />
+        </div>
+      </div>
+      <div className='mb-3 mt-2'>
+        <div className="flex flex-column gap-2">
+          <label htmlFor="currentTargetAmount" className='text-black fw-medium'>Current Target Amount</label>
+          <InputNumber id="currentTargetAmount" className='w-100' value={currentTargetAmount} minFractionDigits={2} onChange={(e: InputNumberChangeEvent) => syncCurrentTargetAmount(e.value ?? 0)} mode="currency" currency="INR" currencyDisplay="code" locale="en-IN" />
+        </div>
+      </div>
+      <div className="d-flex justify-content-center">
+        <Button label='Submit' className='rounded-3' onClick={handleSubmit} />
+      </div>
+
+    </div>
+  );
+}
+
+export default TargetForm;
