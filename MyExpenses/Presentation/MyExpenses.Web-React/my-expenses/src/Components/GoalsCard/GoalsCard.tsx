@@ -16,11 +16,15 @@ const today = new Date();
 
 const GoalsCard: FC<GoalsCardProps> = ({ isOverViewPage = true, target, achieved, onUpdate }: GoalsCardProps) => {
   const [goalPercentage, setGoalPercentage] = useState(0);
+
   useEffect(() => {
     if (target === 0)
       setGoalPercentage(achieved === 0 ? 0 : 100);
     else {
       var percentage = (achieved * 100) / target;
+      if(percentage>100)
+        percentage=100;
+      console.log(percentage, achieved, target)
       setGoalPercentage(parseFloat(percentage.toPrecision(3)));
     }
   }, [target, achieved]);

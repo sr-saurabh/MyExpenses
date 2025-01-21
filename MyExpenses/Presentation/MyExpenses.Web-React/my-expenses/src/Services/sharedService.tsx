@@ -1,3 +1,5 @@
+import { get } from "./HttpProviders"
+
 export const getIconForCategory = (categoryName: string) => {
     switch (categoryName) {
         case 'Food':
@@ -13,4 +15,8 @@ export const getIconForCategory = (categoryName: string) => {
         default:
             return 'objects-column'
     }
+}
+
+export const getAllCategories=()=>{
+    return get(`Category`);
 }

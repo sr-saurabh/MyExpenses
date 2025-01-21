@@ -1,15 +1,20 @@
+import moment from 'moment';
 import React, { Children, FC, useEffect, useState } from 'react';
 import './AccountDetails.css';
 import { useLocation, useNavigate, useNavigation, useParams } from 'react-router-dom';
 import { getAccount } from '../../Services/accountService.tsx';
 import { AccountModel, AccountType } from '../../Models/AccountModel.ts';
-
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
+import { Transaction, TransactionType } from '../../Models/Transactions.ts';
+import { getAllTransactions } from '../../Services/transactionService.tsx';
 const AccountDetails = () => {
   // const [accountId, setAccountId] = useState<number | null>();
   // const location = useLocation();
   // const navigate = useNavigate();
   const { accountId } = useParams(); // Extract the accountId parameter
   const [accountDetails, setAccountDetails] = useState<AccountModel | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   useEffect(() => {
     const fetchAccount = async () => {
@@ -17,15 +22,33 @@ const AccountDetails = () => {
         try {
           const response = await getAccount(Number(accountId));
           setAccountDetails(response.data);
-          console.log(response);
+
+          const transactionResponse = await getAllTransactions(Number(accountId));
+          setTransactions(transactionResponse.data);
+
+          console.log(transactionResponse);
         } catch (error) {
           console.error('Error fetching account:', error);
         }
+
+
       }
     };
     fetchAccount();
   }, [accountId]);
+  const formatCurrency = (value: number) => {
+    return value.toLocaleString('en-US', { style: 'currency', currency: 'INR' });
+  };
+  const amountBodyTemplate = (transaction: Transaction) => {
+    return formatCurrency(transaction.amount);
+  };
+  const dateBodyTemplate = (transaction: Transaction) => {
+    return <> {moment(transaction.date).format("DD MMM, yyyy")}</>;
+  };
 
+  const transactionTypeBodyTemplate = (transaction: Transaction) => {
+    return <>{TransactionType[transaction?.transactionType]}</>;
+  };
 
   return (
     <div className={''}>
@@ -61,7 +84,14 @@ const AccountDetails = () => {
         </div>
         <div className='action-button-container'></div>
       </div>
-
+      <p className='card-header-text'>Account Details</p>
+      <div className="card">
+        <DataTable value={transactions} tableStyle={{ minWidth: '50rem' }}>
+          <Column body={dateBodyTemplate} header="Date"></Column>
+          <Column body={transactionTypeBodyTemplate} header="Transaction Type"></Column>
+          <Column body={amountBodyTemplate} header="Amount"></Column>
+        </DataTable>
+      </div>
     </div>
   );
 }

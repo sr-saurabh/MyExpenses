@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyExpenses.Application.Abstraction;
 using MyExpenses.Domain.core.Models.Expense;
@@ -6,23 +6,19 @@ using MyExpenses.Domain.core.Models.ExpenseFilter;
 
 namespace MyExpenses.API.Controllers
 {
-    /// <summary>
-    /// Manages HTTP requests related to personal expenses, including retrieval, creation, updating, and deletion.
-    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class PersonalExpenseController : ControllerBase
+    public class ActivityController : ControllerBase
     {
-        private readonly ITransactionContract _personalExpenseContract;
+        private readonly IActivityContract _activityContract;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PersonalExpenseController"/> class.
+        /// Initializes a new instance of the <see cref="TransactionController"/> class.
         /// </summary>
         /// <param name="personalExpenseContract">The contract for managing personal expenses.</param>
-        public PersonalExpenseController(ITransactionContract personalExpenseContract)
+        public ActivityController(ITransactionContract personalExpenseContract, IActivityContract activityContract)
         {
-            _personalExpenseContract = personalExpenseContract;
+            _activityContract= activityContract;
         }
 
         /// <summary>
@@ -33,7 +29,7 @@ namespace MyExpenses.API.Controllers
         [HttpGet("get-all-user-expense/{userId}")]
         public async Task<IActionResult> GetAllUserExpense(int userId)
         {
-            var result = await _personalExpenseContract.GetPersonalExpenses(userId);
+            var result = await _activityContract.GetActivitiesAsync(userId);
             return Ok(result);
         }
 
@@ -45,7 +41,7 @@ namespace MyExpenses.API.Controllers
         [HttpGet("{expenseId}")]
         public async Task<IActionResult> GetExpense(int expenseId)
         {
-            var result = await _personalExpenseContract.GetPersonalExpense(expenseId);
+            var result = await _activityContract.GetActivity(expenseId);
             return Ok(result);
         }
 
@@ -56,9 +52,9 @@ namespace MyExpenses.API.Controllers
         /// <param name="expenseFilter">The filter criteria to apply.</param>
         /// <returns>A list of filtered personal expenses.</returns>
         [HttpPost("get-all-filtered-expense/{userId}")]
-        public async Task<IActionResult> GetAllFilteredExpense(int userId, [FromBody] PersonalExpenseFilter expenseFilter)
+        public async Task<IActionResult> GetAllFilteredExpense(int userId, [FromBody] ActivityFilter expenseFilter)
         {
-            var result = await _personalExpenseContract.GetPersonalExpenses(userId, expenseFilter);
+            var result = await _activityContract.GetActivityWithSummary(userId, expenseFilter);
             return Ok(result);
         }
 
@@ -70,7 +66,7 @@ namespace MyExpenses.API.Controllers
         [HttpGet("get-expense-summary/{userId}")]
         public async Task<IActionResult> GetExpenseSummary(int userId)
         {
-            var result = await _personalExpenseContract.GetPersonalExpenseSummary(userId);
+            var result = await _activityContract.GetActivitySummary(userId);
             return Ok(result);
         }
 
@@ -82,7 +78,7 @@ namespace MyExpenses.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateExpense([FromBody] CreateActivity value)
         {
-            var result = await _personalExpenseContract.CreatePersonalExpenses(value);
+            var result = await _activityContract.CreateActivityAsync(value);
             return Ok(result);
         }
 
@@ -95,7 +91,7 @@ namespace MyExpenses.API.Controllers
         [HttpPut("{expenseId}")]
         public async Task<IActionResult> UpdateExpense(int expenseId, [FromBody] UpdateActivity value)
         {
-            var result = await _personalExpenseContract.UpdatePersonalExpense(value);
+            var result = await _activityContract.UpdateActivity(value);
             return Ok(result);
         }
 
@@ -107,7 +103,7 @@ namespace MyExpenses.API.Controllers
         [HttpDelete("{expenseId}")]
         public async Task<IActionResult> DeleteExpense(int expenseId)
         {
-            var result = await _personalExpenseContract.DeletePersonalExpense(expenseId);
+            var result = await _activityContract.DeleteActivity(expenseId);
             return Ok(result);
         }
 
@@ -120,7 +116,7 @@ namespace MyExpenses.API.Controllers
         [HttpGet("categories/{appUserId}")]
         public async Task<IActionResult> GetCategories(int appUserId)
         {
-            var res = await _personalExpenseContract.GetCategories(appUserId);
+            var res = await _activityContract.GetCategories(appUserId);
             return Ok(res);
         }
 
@@ -133,7 +129,7 @@ namespace MyExpenses.API.Controllers
         [HttpGet("weekly-summary/{appUserId}")]
         public async Task<IActionResult> GetWeeklySummary(int appUserId, bool isCurrentWeek)
         {
-            var res = await _personalExpenseContract.GetWeeklyExpense(appUserId, isCurrentWeek);
+            var res = await _activityContract.GetWeeklyActivity(appUserId, isCurrentWeek);
             return Ok(res);
         }
     }

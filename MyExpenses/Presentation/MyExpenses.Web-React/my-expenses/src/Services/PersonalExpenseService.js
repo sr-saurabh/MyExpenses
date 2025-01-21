@@ -1,33 +1,33 @@
 import { post,get, put, remove } from '../Services/HttpProviders';
 
 export const addPersonalExpense = (expenseData) => {
-    return post('PersonalExpense', expenseData);
+    return post('Activity', expenseData);
 };
 
 export const getCategories = (appUserId) => {
-    return get(`PersonalExpense/categories/${appUserId}`);
+    return get(`Activity/categories/${appUserId}`);
 };
 
 export const getPersonalExpenses = (appUserId) => {
-    return get(`PersonalExpense/get-all-user-expense/${appUserId}`);
+    return get(`Activity/get-all-user-expense/${appUserId}`);
 };
 
 export const getPersonalExpense = (id) => {
-    return get(`PersonalExpense/${id}`);
+    return get(`Activity/${id}`);
 };
 
 export const getPersonalExpenseSummary=(appuserId)=>{
-    return get(`PersonalExpense/get-expense-summary/${appuserId}`);
+    return get(`Activity/get-expense-summary/${appuserId}`);
 }
 
 export const updatePersonalExpense = (expenseId, expenseData) => {
-    return put(`PersonalExpense/update/${expenseId}`, expenseData);
+    return put(`Activity/update/${expenseId}`, expenseData);
 };
 
 export const deletePersonalExpense = (id) => {
-    return remove(`PersonalExpense/delete/${id}`);
+    return remove(`Activity/delete/${id}`);
 };
 
 export const getFilteredResults = (appUserId, filterData) => {
-    return post(`PersonalExpense/filter/${appUserId}`, filterData);
+    return post(`Activity/filter/${appUserId}`, filterData);
 };

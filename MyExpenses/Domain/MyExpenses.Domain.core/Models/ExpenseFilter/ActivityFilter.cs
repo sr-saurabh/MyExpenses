@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyExpenses.Domain.core.Models.ExpenseFilter
 {
-    public class PersonalExpenseFilter
+    public class ActivityFilter
     {
         public DateFilter? DateFilter { get; set; }
         public List<string>? Categories { get; set; }

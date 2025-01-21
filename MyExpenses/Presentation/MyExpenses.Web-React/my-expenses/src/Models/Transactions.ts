@@ -1,11 +1,9 @@
 
 export interface Transaction {
     id: number,
-    category: string,
-    description: string,
     date: Date,
     amount: number,
-    type: string,
+    transactionType: TransactionType,
 }
 
 export interface WeeklyExpense {
@@ -20,4 +18,9 @@ export interface GoalExpenseSummary {
     categoryName: string,
     currentMonthExpense: number,
     previousMonthExpense: number,
+}
+
+export enum TransactionType{
+    Credit=0,
+    Debit=1
 }

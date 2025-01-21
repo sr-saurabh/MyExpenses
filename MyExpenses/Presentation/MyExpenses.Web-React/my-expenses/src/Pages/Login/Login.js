@@ -143,7 +143,7 @@ const Login = () => {
         if (formData.email && !emailRegex.test(formData.email)) {
             formError.email = 'Invalid Email Format';
         }
-        if (formData.password && !passwordRegex.test(formData.password)) {
+        if (isSignup && formData.password && !passwordRegex.test(formData.password)) {
             formError.password = 'Password must be strong';
         }
 

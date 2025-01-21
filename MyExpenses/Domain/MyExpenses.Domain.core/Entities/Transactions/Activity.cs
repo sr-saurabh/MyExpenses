@@ -16,7 +16,7 @@ namespace MyExpenses.Domain.core.Entities.Expenses
         /// <summary>
         /// Gets or sets the ID of the user associated with this expense.
         /// </summary>
-        public int? TransactionId{ get; set; }
+        public int TransactionId{ get; set; }
 
         /// <summary>
         /// Gets or sets the description of the expense.

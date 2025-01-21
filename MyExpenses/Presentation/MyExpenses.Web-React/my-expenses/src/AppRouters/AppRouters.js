@@ -5,7 +5,7 @@ import Register from '../Pages/Register/Register';
 import Friends from '../Pages/Friends/Friends';
 import Groups from '../Pages/Groups/Groups';
 import Profile from '../Pages/Profile/Profile';
-import Transactions from '../Pages/Transactions/Transactions';
+import Transactions from '../Pages/Transactions/Transactions.tsx';
 import Balances from '../Pages/balances/balances.tsx';
 import AccountDetails from '../Pages/AccountDetails/AccountDetails.tsx';
 
@@ -22,7 +22,7 @@ const AppRouters = () => {
                 <Route path="/friends" element={<Friends />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path='my-profile' element={<Profile />} />
-                <Route path='Transactions' element={<Transactions />} />
+                <Route path='activity' element={<Transactions />} />
             </Routes>
         </div>
     );

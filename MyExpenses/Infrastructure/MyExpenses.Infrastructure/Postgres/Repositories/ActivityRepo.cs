@@ -30,7 +30,7 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories
         /// <param name="userId">The ID of the user whose expenses are to be retrieved.</param>
         /// <param name="filter">The filter criteria to apply to the expense retrieval.</param>
         /// <returns>A queryable collection of <see cref="Transaction"/> matching the filter criteria.</returns>
-        public async Task<IQueryable<Activity>> GetFilteredExpenses(int userId, PersonalExpenseFilter filter)
+        public async Task<IQueryable<Activity>> GetFilteredExpenses(int userId, ActivityFilter filter)
         {
             if (filter == null)
             {

@@ -18,7 +18,7 @@ namespace MyExpenses.Domain.core.Repositories
         /// <param name="id">The ID of the user or entity for which expenses are filtered.</param>
         /// <param name="expression">The filter criteria applied to the expenses.</param>
         /// <returns>An IQueryable collection of filtered PersonalExpenses.</returns>
-        Task<IQueryable<Activity>> GetFilteredExpenses(int id, PersonalExpenseFilter expression);
+        Task<IQueryable<Activity>> GetFilteredExpenses(int id, ActivityFilter expression);
 
         /// <summary>
         /// Retrieves a summary of personal expenses for a specific user.

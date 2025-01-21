@@ -90,6 +90,7 @@ namespace MyExpenses.API
                     .AddScoped<IAppUserContract, AppUserProvider>()
                     .AddScoped<IAccountContract, AccountProvider>()
                     .AddScoped < IGoalContract, GoalProvider>()
+                    .AddScoped < IActivityContract, ActivityProvider>()
                     .AddScoped<ICategoryContract, CategoryProvider>();
             return services;
 

@@ -13,6 +13,5 @@ namespace MyExpenses.Domain.core.Entities.Expenses
         public DateTime Date { get; set; }
         public Account Account { get; set; }
         public Activity? Activity { get; set; }
-
     }
 }

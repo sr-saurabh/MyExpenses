@@ -11,5 +11,6 @@ namespace MyExpenses.Domain.core.Repositories
     /// </summary>
     public interface ITransactionRepo : IAuditableRepo<Transaction>
     {
+
     }
 }

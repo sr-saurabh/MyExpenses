@@ -28,7 +28,7 @@ const Sidebar = React.memo((props) => {
         const items = [
             { label: 'Overview', icon: 'pi pi-th-large', route: 'overview' },
             { label: 'Balances', icon: 'pi pi-wallet', route: 'balances' },
-            { label: 'Transactions', icon: 'pi pi-arrow-right-arrow-left', route: 'transactions' },
+            { label: 'Activity', icon: 'pi pi-arrow-right-arrow-left', route: 'activity' },
             { label: 'Groups', icon: 'pi pi-users', route: 'groups' },
             { label: 'Expenses', icon: 'pi pi-indian-rupee' },
             { label: 'Goals', icon: 'pi pi-bullseye' },

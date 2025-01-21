@@ -15,10 +15,7 @@ namespace MyExpenses.Domain.core.Models.PersonalExpense
         public string Category { get; set; }
         public DateTime Date { get; set; }
         public decimal Amount { get; set; }
-
-
-        //PersonalExpense Entity
-        public string Type { get; set; }
+        public string TransactionType { get; set; }
 
     }
     public class ApiActivityWithSummary

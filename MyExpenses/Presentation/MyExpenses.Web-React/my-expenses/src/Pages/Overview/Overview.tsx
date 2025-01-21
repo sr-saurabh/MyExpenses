@@ -12,11 +12,11 @@ import UserContext from '../../Context/UserContext.ts';
 import { AccountModel, AccountType } from '../../Models/AccountModel.ts';
 import { AppUser } from '../../Models/AppUser.ts';
 import { Goal, GoalSummary, UpdateGoal } from '../../Models/Goals.ts';
-import { GoalExpenseSummary, Transaction } from '../../Models/Transactions.tsx';
+import { Activity, GoalExpenseSummary, Transaction } from '../../Models/Transactions.tsx';
 import { getAccounts } from '../../Services/accountService.tsx';
 import { getAllCategoryGoals, getGoalsSummary, updateGoal } from '../../Services/categoryService.tsx';
 import { getIconForCategory } from '../../Services/sharedService.tsx';
-import { getAllTransactions, getGoalExpenseSummary } from '../../Services/transactionService.tsx';
+import { getAllActivities, getGoalExpenseSummary } from '../../Services/transactionService.tsx';
 import './Overview.css';
 
 
@@ -29,7 +29,7 @@ function Overview() {
     const [accounts, setAccounts] = useState<AccountModel[] | null>(null);
     const [goals, setGoals] = useState<Goal[] | null>(null);
     const [goalSummary, setGoalSummary] = useState<GoalSummary | null>(null);
-    const [transactions, setTransactions] = useState<Transaction[] | null>(null);
+    const [transactions, setTransactions] = useState<Activity[] | null>(null);
     const [goalExpenseSummary, setGoalExpenseSummary] = useState<GoalExpenseSummary[] | null>(null);
     const { user, setUser } = useContext(UserContext);
 
@@ -55,7 +55,7 @@ function Overview() {
                 if (response.data && response.data.length !== 0)
                     setSelectedAccount(response.data[0]);
             });
-            getAllTransactions(appUser.id).then((response) => {
+            getAllActivities(appUser.id).then((response) => {
                 if (response.status === 200) {
                     setTransactions(response.data);
                 }
@@ -139,6 +139,11 @@ function Overview() {
                 getGoalsSummary(appUser.id, date.getMonth() + 1, date.getFullYear()).then((response) => {
                     if (response.status === 200) {
                         setGoalSummary(response.data);
+                    }
+                })
+                getGoalExpenseSummary(appUser.id).then((response) => {
+                    if (response.status === 200) {
+                        setGoalExpenseSummary(response.data);
                     }
                 })
                 setVisible(false);
