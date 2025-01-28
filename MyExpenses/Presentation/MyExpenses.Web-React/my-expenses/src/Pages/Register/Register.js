@@ -1,9 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { InputText } from "primereact/inputtext";
 import { Button } from 'primereact/button';
-import { useState, useRef } from 'react';
 import { Toast } from 'primereact/toast';
-import { registerUser } from '../../Services/userServices.tsx';
+import { registerUser, getCurrentUserProfile } from '../../Services/userServices.tsx';
 import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
@@ -20,6 +19,33 @@ export default function Register() {
     const [formData, setFormData] = useState(initialFormData);
     const [formError, setFormError] = useState({});
 
+    useEffect(() => {
+        var token = localStorage.getItem('token');
+        if (token) {
+            getProfileData();
+        }
+    }, []);
+    const getProfileData = () => {
+        const profileData = localStorage.getItem('profileData');
+        if (profileData == null || profileData === undefined) {
+            getCurrentUserProfile(true).then((response) => {
+                if (response.status === 204) {
+                    toast.current.show({ severity: 'warning', summary: 'Login Success', detail: "Profile not found", life: 3000 });
+                    navigate('/register-user');
+                }
+                else {
+                    const profileData = response.data;
+                    localStorage.setItem('profileData', JSON.stringify(profileData));
+                    navigate('/');
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+        }
+        else {
+            navigate('/');
+        }
+    }
     const handleSubmit = (e) => {
         e.preventDefault();
         const formError = validateForm(formData);
@@ -31,13 +57,13 @@ export default function Register() {
         }
         else {
             console.log(formData);
-            registerUser(formData).then((response)=>{
+            registerUser(formData).then((response) => {
                 console.log(response);
-                if(response.status===200)
-                {
-                    navigate('/overview')
+                if (response.status === 200) {
+                    getProfileData();
                 }
-            })
+            }
+            )
         }
     };
 

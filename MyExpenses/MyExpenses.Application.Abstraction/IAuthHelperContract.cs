@@ -14,7 +14,7 @@ namespace MyExpenses.Application.Abstraction
         /// </summary>
         /// <param name="userClaimsPrincipal">The claims principal containing the user's claims.</param>
         /// <returns>The user's ID as a <see cref="Guid"/>.</returns>
-        Guid GetUserId(ClaimsPrincipal? userClaimsPrincipal);
+        Task<Guid> GetUserId(ClaimsPrincipal? userClaimsPrincipal);
 
         /// <summary>
         /// Retrieves the email address of the currently authenticated user.
@@ -26,7 +26,7 @@ namespace MyExpenses.Application.Abstraction
         /// Retrieves the ID of the currently authenticated user.
         /// </summary>
         /// <returns>The user's ID as a <see cref="Guid"/>.</returns>
-        Guid GetCurrentUserId();
+        Task<Guid> GetCurrentUserId();
 
         /// <summary>
         /// Retrieves the <see cref="AppIdentityUser"/> object for the currently authenticated user.

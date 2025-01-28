@@ -30,10 +30,12 @@ namespace MyExpenses.API.Services
         /// </summary>
         /// <param name="userClaimsPrincipal">The claims principal containing the user's claims.</param>
         /// <returns>The user's ID as a <see cref="Guid"/>.</returns>
-        public Guid GetUserId(ClaimsPrincipal? userClaimsPrincipal)
+        public async Task<Guid> GetUserId(ClaimsPrincipal? userClaimsPrincipal)
         {
-            var id = userClaimsPrincipal.FindFirstValue(ClaimTypes.NameIdentifier);
-            return new Guid(id);
+            if (userClaimsPrincipal == null) return Guid.Empty;
+            string? id = userClaimsPrincipal?.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (id == null) return Guid.Empty;
+            return Guid.Parse(id);
         }
 
         /// <summary>
@@ -50,10 +52,10 @@ namespace MyExpenses.API.Services
         /// Retrieves the ID of the currently authenticated user.
         /// </summary>
         /// <returns>The user's ID as a <see cref="Guid"/>.</returns>
-        public Guid GetCurrentUserId()
+        public async Task<Guid> GetCurrentUserId()
         {
-            UserId = httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return new Guid(UserId);
+            var userClaimsPrincipal = httpContextAccessor.HttpContext?.User;
+            return await GetUserId(userClaimsPrincipal);
         }
 
         /// <summary>

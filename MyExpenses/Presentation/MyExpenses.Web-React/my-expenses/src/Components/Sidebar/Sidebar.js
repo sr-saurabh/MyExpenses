@@ -30,7 +30,7 @@ const Sidebar = React.memo((props) => {
             { label: 'Balances', icon: 'pi pi-wallet', route: 'balances' },
             { label: 'Activity', icon: 'pi pi-arrow-right-arrow-left', route: 'activity' },
             { label: 'Groups', icon: 'pi pi-users', route: 'groups' },
-            { label: 'Expenses', icon: 'pi pi-indian-rupee' },
+            { label: 'Expenses', icon: 'pi pi-indian-rupee', route:'expenses' },
             { label: 'Goals', icon: 'pi pi-bullseye' },
             { label: 'Settings', icon: 'pi pi-cog' }
         ];

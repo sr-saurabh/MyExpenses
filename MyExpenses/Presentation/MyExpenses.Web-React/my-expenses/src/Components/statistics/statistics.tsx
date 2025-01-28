@@ -73,7 +73,7 @@ const Statistics: FC<statisticsProps> = ({ type = 'weekly', userId }: statistics
             ticks: {
               color: textColorSecondary,
               font: {
-                weight: 500,
+                weight: 400,
               },
             },
             grid: {

@@ -46,7 +46,7 @@ namespace MyExpenses.Application.Providers
         /// <exception cref="Exception">Thrown if the contact relationship does not exist between the users or if the user is already in the group.</exception>
         public async Task<bool> AddUserToGroup(int userId, int groupId)
         {
-            var currentUserId = _authHelper.GetCurrentUserId();
+            var currentUserId = await _authHelper.GetCurrentUserId();
             var id = _appUserRepo.Search(u => u.UserId == currentUserId).Select(u => u.Id).SingleOrDefault();
 
             // Check if the contact relationship exists between the users
@@ -82,7 +82,7 @@ namespace MyExpenses.Application.Providers
         /// <returns>A list of <see cref="ApiAppUser"/> objects representing the members of the group.</returns>
         public async Task<List<MyContact>> GetMembersOfGroup(int groupId)
         {
-            var currentUserId = _authHelper.GetCurrentUserId();
+            var currentUserId = await _authHelper.GetCurrentUserId();
             var appuser = _appUserRepo.Search(u => u.UserId == currentUserId).SingleOrDefault();
             if (appuser == null)
                 throw new Exception("Invalid Request");
@@ -105,7 +105,7 @@ namespace MyExpenses.Application.Providers
         /// <exception cref="Exception">Thrown if the current user is not authorized to remove the user from the group.</exception>
         public async Task<bool> RemoveUserFromGroup(int userId, int groupId)
         {
-            var currUserId = _authHelper.GetCurrentUserId();
+            var currUserId = await _authHelper.GetCurrentUserId();
 
             var membership = await _groupMembershipRepo.Search(m => m.CreatedBy == currUserId && m.GroupId == groupId && m.AppUserId == userId).SingleOrDefaultAsync();
             if (membership == null)

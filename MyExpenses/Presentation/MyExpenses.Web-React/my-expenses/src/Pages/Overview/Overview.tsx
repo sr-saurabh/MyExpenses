@@ -37,7 +37,7 @@ function Overview() {
 
     const items: MenuItem[] = [
         { label: 'All', command: () => { getTransaction('All') } },
-        { label: 'Revenue', command: () => { getTransaction('Revenue') } },
+        { label: 'Income', command: () => { getTransaction('Income') } },
         { label: 'Expenses', command: () => { getTransaction('Expenses') } },
     ];
 
@@ -151,7 +151,7 @@ function Overview() {
         }
     }
 
-    const redirectToBalances=()=>{
+    const redirectToBalances = () => {
         navigate('/balances');
     }
     return (
@@ -232,22 +232,24 @@ function Overview() {
                             <TabMenu model={items} />
                         </div>
                         <div>
-                            {transactions?.map((transaction) => (
-                                <div key={transaction.id} className='d-flex justify-content-between border-bottom py-4'>
-                                    {/* Render transaction details here */}
-                                    <div className='d-flex gap-3'>
-                                        <ComponentWrapper size='large' icon={getIconForCategory(transaction.category)}></ComponentWrapper>
+                            {transactions?.slice(0, 6).map((transaction) => {
+                                return (
+                                    <div key={transaction.id} className='d-flex justify-content-between border-bottom py-4'>
+                                        {/* Render transaction details here */}
+                                        <div className='d-flex gap-3'>
+                                            <ComponentWrapper size='large' icon={getIconForCategory(transaction.category)}></ComponentWrapper>
+                                            <div>
+                                                <p className='mb-0 fw-medium'>{transaction.category}</p>
+                                                <p className='mb-0 sub-text'>{transaction.description}</p>
+                                            </div>
+                                        </div>
                                         <div>
-                                            <p className='mb-0 fw-medium'>{transaction.category}</p>
-                                            <p className='mb-0 sub-text'>{transaction.description}</p>
+                                            <p className='mb-0'>Rs.{transaction.amount}</p>
+                                            <p className='mb-0 sub-text'>{moment(transaction.date).format("DD MMM, yyyy")}</p>
                                         </div>
                                     </div>
-                                    <div>
-                                        <p className='mb-0'>Rs.{transaction.amount}</p>
-                                        <p className='mb-0 sub-text'>{moment(transaction.date).format("DD MMM, yyyy")}</p>
-                                    </div>
-                                </div>
-                            ))}
+                                )
+                            })}
                         </div>
                     </div>
                 </div>
@@ -261,10 +263,10 @@ function Overview() {
                             <p className="mb-1 card-header-text">Expenses Breakdown</p>
                             <span>*Compare to last month</span>
                         </div>
-                        <div className='card flex-row flex-wrap gap-3'>
+                        <div className='card flex-row row flex-wrap gap-3'>
                             {
                                 goalExpenseSummary?.map((ge) => (
-                                    <div key={ge.id} className='d-flex gap-3 category-name flex-grow-1 pb-2 border-bottom'>
+                                    <div key={ge.id} className='col-3 d-flex gap-3 category-name flex-grow-1 pb-2 border-bottom'>
                                         <ComponentWrapper height='60px' width='40px' icon={getIcon(ge.categoryName)}></ComponentWrapper>
                                         <div>
                                             {/* Render goal expense summary details here */}

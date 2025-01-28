@@ -108,7 +108,7 @@ namespace MyExpenses.Application.Providers
         public async Task<List<ApiActivity>> GetActivitiesAsync(int userId)
         {
 
-            var personalExpenses = _activityRepo.Search(pe => pe.AppUserId == userId).Include(a=>a.Transaction).ToList();
+            var personalExpenses = _activityRepo.Search(pe => pe.AppUserId == userId).Include(a=>a.Transaction).OrderByDescending(a=>a.Transaction.Date).ToList();
             return _mapper.Map<List<ApiActivity>>(personalExpenses);
         }
 
@@ -159,7 +159,10 @@ namespace MyExpenses.Application.Providers
         public async Task<bool> UpdateActivity(UpdateActivity expense)
         {
             var previousExpense = _activityRepo.Search(pe => pe.Id == expense.Id).Include(a => a.Transaction).SingleOrDefault();
-            var previousAmount = previousExpense.Transaction.Amount;
+            if(previousExpense == null) 
+                throw new ArgumentNullException();
+
+                var previousAmount = previousExpense.Transaction.Amount;
 
             var previousAccount = await _accountRepo.GetByIdAsync((int)previousExpense.Transaction.AccountId);
 
@@ -170,7 +173,7 @@ namespace MyExpenses.Application.Providers
             var isUpdated = await _activityRepo.UpdateAsync(pe => pe.Id == expense.Id, pe => pe.SetProperty(p => p.Category, expense.Category).SetProperty(p => p.Description, expense.Description).SetProperty(p => p.CategoryId, expense.CategoryId));
 
             //updating the Transaction
-            var res = await _transactionRepo.UpdateAsync(t => t.Id == previousExpense.TransactionId, t => t.SetProperty(t => t.Amount, expense.Amount).SetProperty(p => p.Date, expense.Date).SetProperty(p => p.Date, expense.Date).SetProperty(p => p.AccountId, expense.AccountId));
+            var res = await _transactionRepo.UpdateAsync(t => t.Id == previousExpense.TransactionId, t => t.SetProperty(t => t.Amount, expense.Amount).SetProperty(p => p.Date, expense.Date).SetProperty(p => p.TransactionType, expense.Type).SetProperty(p => p.AccountId, expense.AccountId));
 
             //
             // Updating the goal
@@ -246,19 +249,20 @@ namespace MyExpenses.Application.Providers
             if (previousExpense.Transaction.TransactionType == TransactionType.Credit)
                 previousAmount = -previousAmount;
 
-            var goal = _goalRepo.Search(c => c.Id == previousExpense.CategoryId && c.Month == previousExpense.Transaction.Date.Month && c.Year == previousExpense.Transaction.Date.Year).SingleOrDefault();
+            var goal = _goalRepo.Search(c => c.CategoryId == previousExpense.CategoryId && c.Month == previousExpense.Transaction.Date.Month && c.Year == previousExpense.Transaction.Date.Year).SingleOrDefault();
 
-            var isDeleted = await _activityRepo.DeleteAsync(activityId);
 
             //deleting the transaction
-            var transactionDeleted= await _transactionRepo.DeleteAsync(previousExpense.TransactionId);
 
 
             var isCategoryUpdated = await _goalRepo.UpdateTotalSpentAsync(goal.Id, (decimal)(goal.TotalSpent - previousAmount));
 
             var accountDetail = await _accountRepo.GetByIdAsync(previousExpense.Transaction.AccountId);
-            var isAccountUpdated = await _accountRepo.UpdateBalanceAsync((int)previousExpense.Transaction.TransactionType, accountDetail.Balance + previousAmount);
+            var isAccountUpdated = await _accountRepo.UpdateBalanceAsync((int)previousExpense.Transaction.AccountId, accountDetail.Balance + previousAmount);
 
+            var transactionDeleted= await _transactionRepo.DeleteAsync(previousExpense.TransactionId);
+
+            var isDeleted = await _activityRepo.DeleteAsync(activityId);
             return isDeleted != null;
         }
         /// <summary>

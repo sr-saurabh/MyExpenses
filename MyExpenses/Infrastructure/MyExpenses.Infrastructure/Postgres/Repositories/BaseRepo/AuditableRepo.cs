@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Query;
 using MyExpenses.Application.Abstraction;
 using MyExpenses.Domain.core.Entities.Base;
+using MyExpenses.Domain.core.Entities.User;
 using MyExpenses.Domain.core.Repositories.Base;
 using System.Linq.Expressions;
 
@@ -26,7 +27,7 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories.BaseRepo
         public AuditableRepo(MyExpensesDbContext dbContext, IAuthHelperContract authHelper)
         {
             _dbContext = dbContext;
-            _dbSet = _dbContext.Set<T>();
+            _dbSet = dbContext.Set<T>();
             _authHelper = authHelper;
         }
 
@@ -39,7 +40,7 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories.BaseRepo
         {
             try
             {
-                entity = SetCreateAuditFields(entity);
+                entity = await SetCreateAuditFields(entity);
                 var result = await _dbSet.AddAsync(entity);
                 var res = await _dbContext.SaveChangesAsync();
                 return result.Entity;
@@ -85,9 +86,10 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories.BaseRepo
             var updatedRows = await entity.ExecuteUpdateAsync(updateExpression);
             if (updatedRows == 0)
                 return false;
+            var updatedBy = await _authHelper.GetCurrentUserId();
             updatedRows = await entity.ExecuteUpdateAsync(e => e
                                 .SetProperty(e => e.UpdatedOn, DateTime.UtcNow)
-                                .SetProperty(e => e.UpdatedBy, _authHelper.GetCurrentUserId()));
+                                .SetProperty(e => e.UpdatedBy, updatedBy));
             return updatedRows > 0;
         }
 
@@ -137,11 +139,11 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories.BaseRepo
         /// </summary>
         /// <param name="entity">The entity for which to set audit fields.</param>
         /// <returns>The entity with updated audit fields.</returns>
-        private T SetCreateAuditFields(T entity)
+        private async Task<T> SetCreateAuditFields(T entity)
         {
             entity.CreatedOn = DateTime.UtcNow;
             if (entity.CreatedBy == null)
-                entity.CreatedBy = _authHelper.GetCurrentUserId();
+                entity.CreatedBy = await _authHelper.GetCurrentUserId();
             return entity;
         }
 
@@ -150,10 +152,10 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories.BaseRepo
         /// </summary>
         /// <param name="entity">The entity for which to set audit fields.</param>
         /// <returns>The entity with updated audit fields.</returns>
-        private T SetUpdateAuditFields(T entity)
+        private async Task<T> SetUpdateAuditFields(T entity)
         {
             entity.UpdatedOn = DateTime.UtcNow;
-            entity.UpdatedBy = _authHelper.GetCurrentUserId();
+            entity.UpdatedBy =await _authHelper.GetCurrentUserId();
             return entity;
         }
     }

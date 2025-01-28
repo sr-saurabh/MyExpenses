@@ -51,10 +51,9 @@ namespace MyExpenses.Application.Providers
 
                 var appUser = _mapper.Map<AppUser>(user);
                 appUser.Email = email;
-                appUser.UserIdentity = new() { ActivityStatus = ActivityStatus.Active };
                 appUser.FullName = $"{appUser.FirstName} {appUser.LastName}";
 
-                await _appUserRepo.CreateAsync(appUser);
+                var res= await _appUserRepo.CreateAsync(appUser);
                 return user;
             }
             catch (Exception ex)

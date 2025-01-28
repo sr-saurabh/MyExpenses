@@ -110,7 +110,6 @@ namespace MyExpenses.API
                     .AddScoped<IGoalRepo, GoalRepo>()
                     .AddScoped<IActivityRepo, ActivityRepo>()
                     .AddScoped<IGroupRepo, GroupRepo>();
-            ;
             return services;
 
         }

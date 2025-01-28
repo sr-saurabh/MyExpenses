@@ -8,6 +8,7 @@ export const addNewAccount = (createAccount:CreateAccountModel) => {
 export const getAccounts = (userId: number) => {
   return get(`Account/getAll?userId=${userId}`)
 }
+
 export const getAccount = (accountId: number) => {
   return get(`Account/?accountId=${accountId}`)
 }

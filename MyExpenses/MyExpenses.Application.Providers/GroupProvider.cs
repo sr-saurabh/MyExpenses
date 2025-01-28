@@ -46,7 +46,7 @@ namespace MyExpenses.Application.Providers
             var newGroup = _mapper.Map<UserGroup>(group);
             await _groupRepo.CreateAsync(newGroup);
 
-            var userId = _authHelper.GetCurrentUserId();
+            var userId = await _authHelper.GetCurrentUserId();
             var user = _appUserRepo.Search(u => u.UserId == userId).SingleOrDefault();
 
             // Adding the current user as a member of the group

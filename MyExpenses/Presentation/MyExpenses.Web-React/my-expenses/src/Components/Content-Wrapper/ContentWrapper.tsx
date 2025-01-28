@@ -8,9 +8,10 @@ interface ContentWrapperProps {
   size?: string,
   height?: string,
   width?: string,
+  parentClass?:string
 }
 
-const ContentWrapper: FC<ContentWrapperProps> = ({ icon, children, iconColor, size, height, width }: ContentWrapperProps) => {
+const ContentWrapper: FC<ContentWrapperProps> = ({ icon, children, iconColor, size, height, width, parentClass }: ContentWrapperProps) => {
   const [containerHeight, setHeight] = useState('');
   const [containerWidth, setWidth] = useState('');
 
@@ -41,7 +42,7 @@ const ContentWrapper: FC<ContentWrapperProps> = ({ icon, children, iconColor, si
     }
   }, [size, height, width]);
   return (
-    <div className='wrapper-content rounded-3 d-flex justify-content-center align-items-center' style={{ height: `${containerHeight}`, width: `${containerWidth}` }}>
+    <div className={`wrapper-content rounded-3 d-flex justify-content-center align-items-center ${parentClass}`} style={{ height: `${containerHeight}`, width: `${containerWidth}` }}>
       {!!icon &&
         <div>
           <i className={`pi pi-${icon}`} style={{ color: `${!!iconColor ? iconColor : '#708090'}` }}></i>

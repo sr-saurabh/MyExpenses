@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MyExpenses.Infrastructure.Postgres;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyExpenses.Infrastructure.Migrations
 {
     [DbContext(typeof(MyExpensesDbContext))]
-    partial class MyExpensesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250122075655_addedRelationShipWithIdentity_1")]
+    partial class addedRelationShipWithIdentity_1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1219,7 +1222,7 @@ namespace MyExpenses.Infrastructure.Migrations
                     b.HasOne("MyExpenses.Domain.core.Entities.User.AppIdentityUser", "UserIdentity")
                         .WithOne()
                         .HasForeignKey("MyExpenses.Domain.core.Entities.User.AppUser", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("UserIdentity");

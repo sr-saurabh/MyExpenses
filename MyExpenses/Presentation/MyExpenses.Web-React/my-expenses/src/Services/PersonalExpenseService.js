@@ -21,11 +21,11 @@ export const getPersonalExpenseSummary=(appuserId)=>{
 }
 
 export const updatePersonalExpense = (expenseId, expenseData) => {
-    return put(`Activity/update/${expenseId}`, expenseData);
+    return put(`Activity/${expenseId}`, expenseData);
 };
 
 export const deletePersonalExpense = (id) => {
-    return remove(`Activity/delete/${id}`);
+    return remove(`Activity/${id}`);
 };
 
 export const getFilteredResults = (appUserId, filterData) => {

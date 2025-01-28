@@ -160,7 +160,7 @@ namespace MyExpenses.Application.Providers
         private async Task<bool> VerifyUser(int id, Guid? guid)
         {
             if (guid == null)
-                guid = _authHelperContract.GetCurrentUserId();
+                guid = await _authHelperContract.GetCurrentUserId();
             var user = _appUserRepo.Search(u => u.UserId == guid && u.Id == id).SingleOrDefault();
             return user != null;
         }

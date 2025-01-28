@@ -8,6 +8,7 @@ import Profile from '../Pages/Profile/Profile';
 import Transactions from '../Pages/Transactions/Transactions.tsx';
 import Balances from '../Pages/balances/balances.tsx';
 import AccountDetails from '../Pages/AccountDetails/AccountDetails.tsx';
+import Expenses from '../Pages/Expenses/Expenses.tsx';
 
 const AppRouters = () => {
     return (
@@ -19,6 +20,7 @@ const AppRouters = () => {
                 <Route path="/overview" element={<Overview />} />
                 <Route path="/balances" element={<Balances />} />
                 <Route path="/balances/account/:accountId" element={<AccountDetails />} />
+                <Route path="/expenses" element={<Expenses />} />
                 <Route path="/friends" element={<Friends />} />
                 <Route path="/groups" element={<Groups />} />
                 <Route path='my-profile' element={<Profile />} />

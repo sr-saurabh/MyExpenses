@@ -35,7 +35,7 @@ namespace MyExpenses.API.Controllers
         {
             var userId = HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             var email = HttpContext.User.Identity?.Name;
-            user.UserId = new Guid(userId);
+            user.UserId = Guid.Parse(userId);
             var result = await _appUserContract.RegisterAppUser(user, email);
 
             return Ok(result);

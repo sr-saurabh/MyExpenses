@@ -8,7 +8,7 @@ import { Calendar } from 'primereact/calendar';
 import { InputNumber } from 'primereact/inputnumber';
 import './activityForm.css';
 import { getAllCategories } from '../../Services/sharedService.tsx';
-import { AccountModel  } from '../../Models/AccountModel.ts';
+import { AccountModel } from '../../Models/AccountModel.ts';
 import { CreateActivity } from '../../Models/ActivityModel.ts';
 import { TransactionType } from '../../Models/Transactions.ts';
 import { getAccounts } from '../../Services/accountService.tsx';
@@ -38,7 +38,7 @@ const ActivityForm: FC<ActivityProps> = ({ formData, onSubmit }: ActivityProps) 
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
     const [formError, setFormError] = useState<ActivityFormError>({});
     const [accounts, setAccounts] = useState<AccountModel[]>([]);
-    const [selectedAccount, setSelectedAccounts] = useState<AccountModel>({} as AccountModel);
+    const [selectedAccount, setSelectedAccount] = useState<AccountModel>({} as AccountModel);
     const [newFormData, setFormData] = useState<CreateActivity>({
         description: '',
         category: '',
@@ -59,6 +59,11 @@ const ActivityForm: FC<ActivityProps> = ({ formData, onSubmit }: ActivityProps) 
         getAllCategories()
             .then((response) => {
                 setCategories(response.data);
+
+
+                if (!!formData.categoryId && response.data!=null) {
+                    setSelectedCategory(response.data.find(c => c.id === formData.categoryId) || null)
+                }
             })
             .catch((error) => {
                 console.log(error);
@@ -66,12 +71,17 @@ const ActivityForm: FC<ActivityProps> = ({ formData, onSubmit }: ActivityProps) 
 
         getAccounts(formData.appUserId).then((response) => {
             setAccounts(response.data)
+            if (!!formData.accountId && response.data!=null) {
+                setSelectedAccount(response.data.find(account => account.id === formData.accountId) || null)
+            }
         })
 
     }, []);
 
     useEffect(() => {
         setFormData(formData);
+        console.log(formData)
+
     }, [formData]);
 
     const handleChange = (e: any) => {
@@ -111,13 +121,9 @@ const ActivityForm: FC<ActivityProps> = ({ formData, onSubmit }: ActivityProps) 
         if (!formData.amount) {
             formError.amount = 'Amount is required';
         }
-        if (!formData.type) {
-            formError.transactionType = 'Activity Type is required';
-        }
         if (!formData.accountId) {
             formError.account = 'Account is required';
         }
-
         return formError;
     };
 
@@ -128,8 +134,8 @@ const ActivityForm: FC<ActivityProps> = ({ formData, onSubmit }: ActivityProps) 
 
     const onAccountSelected = (e: any) => {
         console.log(e.value)
-        setSelectedAccounts(e.value);
-        setFormData({ ...newFormData, accountId: e.value.id})
+        setSelectedAccount(e.value);
+        setFormData({ ...newFormData, accountId: e.value.id })
     }
 
     return (
@@ -171,7 +177,7 @@ const ActivityForm: FC<ActivityProps> = ({ formData, onSubmit }: ActivityProps) 
                 </div>
                 <div className='mt-1'>
                     <label htmlFor="account">Account</label>
-                    <Dropdown value={selectedAccount} focusOnHover={false} onChange={(e) => onAccountSelected(e)} id='account' inputId='account' options={accounts} optionLabel='accountName' className="w-100 md:w-14rem expense-form-dropdown" placeholder='Select an account'/>
+                    <Dropdown value={selectedAccount} focusOnHover={false} onChange={(e) => onAccountSelected(e)} id='account' inputId='account' options={accounts} optionLabel='accountName' className="w-100 md:w-14rem expense-form-dropdown" placeholder='Select an account' />
                     <div className='text-danger fs-12px'>{formError?.account}</div>
                 </div>
                 <Button label="Submit" className='rounded-3 mt-2' iconPos='right' />
