@@ -25,7 +25,7 @@ const AccountCard: FC<AccountCardProps> = ({ account, onRemove, onClick }) => {
           <p className="mb-0 sub-text">Account Number</p>
         </div>
         <div>
-          <p className="mb-0 text-highlight">Rs. {account.balance}</p>
+          <p className="mb-0 text-highlight">₹ {account.balance}</p>
           <p className="mb-0 sub-text">Total amount</p>
         </div>
       </div>

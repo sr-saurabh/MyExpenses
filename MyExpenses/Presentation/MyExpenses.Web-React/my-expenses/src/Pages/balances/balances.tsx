@@ -68,7 +68,7 @@ const Balances = () => {
         ))}
         <div className='card flex-grow-1 d-flex flex-column justify-content-center align-items-center'>
           <Button label="Add Account" className='rounded-3' icon="pi pi-chevron-right" iconPos="right" onClick={() => showAccountForm()} />
-          <span className='sub-text mt-2 fw-medium cursor-pointer'>Edit Accounts</span>
+          {/* <span className='sub-text mt-2 fw-medium cursor-pointer'>Edit Accounts</span> */}
         </div>
       </div>
 

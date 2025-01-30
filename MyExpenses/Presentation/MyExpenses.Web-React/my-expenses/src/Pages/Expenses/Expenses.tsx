@@ -3,18 +3,36 @@ import { useNavigate } from 'react-router-dom';
 import { GoalExpenseSummary } from '../../Models/Transactions.tsx';
 import { AppUser } from '../../Models/AppUser';
 import Statistics from '../../Components/statistics/statistics.tsx';
-import { getGoalExpenseSummary } from '../../Services/transactionService.tsx';
+import { getGoalExpenseSummary, getExpenseByCategory, getExpenseByCategoryName, getAllExpenseByCategoryName } from '../../Services/transactionService.tsx';
 import { getIconForCategory } from '../../Services/sharedService.tsx';
 import ComponentWrapper from '../../Components/Content-Wrapper/ContentWrapper.tsx';
 import { getPersonalExpenses } from '../../Services/PersonalExpenseService.js';
-import { Activity } from '../../Models/ActivityModel.ts';
+import { Activity, ActivityByCategory } from '../../Models/ActivityModel.ts';
 import moment from 'moment';
+
+interface ExpByCategory {
+    Food: Activity[] | null,
+    Transportation: Activity[] | null,
+    Shopping: Activity[] | null,
+    Housing: Activity[] | null,
+    Entertainment: Activity[] | null,
+    Others: Activity[] | null,
+}
 
 function Expenses() {
     const navigate = useNavigate();
     const [goalExpenseSummary, setGoalExpenseSummary] = useState<GoalExpenseSummary[] | null>(null);
     const [appUser, setAppUser] = useState<AppUser | null>(null)
     var [expenses, setExpenses] = useState<Activity[]>([]);
+    const [exp, setExp] = useState<ExpByCategory>({
+        Food: null,
+        Transportation: null,
+        Shopping: null,
+        Housing: null,
+        Entertainment: null,
+        Others: null
+    });
+
 
     useEffect(() => {
         const userProfile = localStorage.getItem('profileData');
@@ -30,6 +48,22 @@ function Expenses() {
             })
 
             getExpenses(appUser.id);
+
+            getAllExpenseByCategoryName(appUser.id).then((response) => {
+                if(response.status==200)
+                {
+                    var data=response.data as ActivityByCategory[];
+                    console.log(data)
+                    setExp(prevExp => {
+                        const newExp = { ...prevExp };
+                        data.forEach(act => {
+                            console.log(act);
+                            newExp[act.category.key] = act.category.value;
+                        });
+                        return newExp;
+                    });
+                }
+            })
         }
     }, []);
 
@@ -39,16 +73,16 @@ function Expenses() {
 
     const getComparison = (previous: number, current: number) => {
         var value = 0;
-        if (previous === current)
-            value = 100;
+        if (current === 0)
+            value = 0;
         else if (previous === 0)
             value = current;
-        else if (current === 0)
-            value = 0;
+        else if (previous === current)
+            value = 100;
         else
             value = ((current * 100) / previous) - 100;
         return (<>
-            <p className={value > 0 ? 'text-danger' : 'text-success'}>{value}%
+            <p className={`${value > 0 ? 'text-danger' : 'text-success'} mb-0` }>{value}%
                 <span className='ms-1'><i className={`pi pi-${getComparedIcon(previous, current)}`} style={{ fontSize: '12px' }}></i></span>
             </p>
         </>)
@@ -66,10 +100,9 @@ function Expenses() {
         var percentage = ((current * 100) / previous) - 100;
         return percentage < 0 ? 'arrow-down' : percentage > 0 ? 'arrow-up' : '';
     }
-    const getExpenseByCategory = (categoryName: string) => {
-        var expense = expenses.filter(e => e.category === categoryName);
+    const createExpenseByCategory = (expense: Activity[]) => {
         if (expense.length == 0) {
-            return (<span className='text-center'>No expense found</span>)
+            return (<p className='text-center'>No expense found</p>)
         }
         return (
             <div className='d-flex flex-column gap-1'>
@@ -86,6 +119,16 @@ function Expenses() {
                 ))}
             </div>
         )
+
+    }
+    const getExpenseByCategory = (categoryName: string) => {
+        var expense = exp[categoryName];
+        if (expense == null) {
+            return;
+        }
+        else {
+            return createExpenseByCategory(expense);
+        }
     }
 
 
@@ -100,7 +143,7 @@ function Expenses() {
     }
     // template
     return (
-        <div>
+        <div className='expense-container'>
             <div className='d-flex flex-column gap-2'>
                 <p className="mb-1 card-header-text">Expense Comparison</p>
                 {appUser && <Statistics userId={appUser.id}></Statistics>}
@@ -125,7 +168,7 @@ function Expenses() {
                                         {/* Render goal expense summary details here */}
                                         <div>
                                             <p className='mb-0 text-secondary fw-medium'>{ge.categoryName}</p>
-                                            <p className='mb-0'>Rs. {ge.currentMonthExpense}</p>
+                                            <p className='mb-0'>₹ {ge.currentMonthExpense}</p>
 
                                         </div>
                                         <div className='d-flex flex-column align-items-end'>

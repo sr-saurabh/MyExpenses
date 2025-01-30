@@ -73,7 +73,7 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories
                 previousMonth = 12;
                 previousMonthYear = year - 1;
             }
-            var summaries = await _dbContext.Goals
+            var summaries = await _dbContext.Goals.Where(g => g.AppUserId == userId)
                 .GroupBy(goal => new { goal.CategoryId, goal.Category.CategoryName })
                 .Select(g => new GoalExpenseSummary
                 {

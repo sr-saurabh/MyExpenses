@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MyExpenses.Domain.core.Models.PersonalExpense
 {
-    public class ApiActivity
+    public class ApiActivity    
     {
         //BaseExpense Entity
         public int Id { get; set; }
@@ -26,6 +26,10 @@ namespace MyExpenses.Domain.core.Models.PersonalExpense
         public ActivitySummary Summary { get; set; }
     }
     
+    public class ApiActivityByCategoryKVP
+    {
+        public KeyValuePair<string, List<ApiActivity>> Category { get; set; }
+    }
     
 }
 

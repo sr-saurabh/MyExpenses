@@ -173,14 +173,14 @@ export default function Transactions() {
     <div className=''>
       <div className='d-flex justify-content-between'>
         <div className='ms-3 mt-3'>filter section</div>
-        <div className='mt-3 me-3'>
+        <div className=''>
           <Button label="Add Expense" icon="pi pi-plus" iconPos="right" className='rounded' onClick={() => {setVisible(true); setupFormData(profileData.id)}} />
           <Dialog header={headerElement} visible={visible} className='expense-form-container' headerClassName='pb-0' style={{ width: '50vw' }} onHide={() => { if (!visible) return; setVisible(false); }}>
             <ActivityForm formData={formData} onSubmit={handleFormSubmit} />
           </Dialog>
         </div>
       </div>
-      <div className=' m-3 p-3 rounded-3 card data-container'>
+      <div className=' m-3 me-0  p-3 rounded-3 card data-container'>
         <DataTable value={expenses} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} tableStyle={{ minWidth: '50rem' }}
           paginatorTemplate="RowsPerPageDropdown FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
           currentPageReportTemplate="{first} to {last} of {totalRecords}">

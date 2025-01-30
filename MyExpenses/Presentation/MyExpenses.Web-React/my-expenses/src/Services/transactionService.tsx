@@ -14,7 +14,7 @@ export const getByWeeklyExpenses=(userId:number, isCurrent:boolean)=>{
 }
 
 
-/// gor goal expense summary
+/// goal expense summary
 export const getGoalExpenseSummary=(userId:number)=>{
     return get(`Goal/goal-expense-summary/${userId}`);
 }
@@ -23,4 +23,19 @@ export const getGoalExpenseSummary=(userId:number)=>{
 export const getAllTransactions=(accountNumber:number)=>
 {
     return get(`Transaction/account/${accountNumber}`);
+}
+
+
+export const getExpenseByCategoryName=(appUserId:number, category:string)=>
+{
+    return get(`Activity/expense-by-category/${category}/user/${appUserId}`);
+}
+export const getAllExpenseByCategoryName=(appUserId:number)=>
+{
+    return get(`Activity/all-expense-by-category/user/${appUserId}`);
+}
+
+
+export const getDailyExpenseSummaryForMonth=(appUserId:number, month:number)=>{
+    return get(`Activity/daily-activity-summary/${appUserId}/month/${month}`)
 }

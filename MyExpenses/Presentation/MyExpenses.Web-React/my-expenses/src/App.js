@@ -23,7 +23,6 @@ function App() {
     }
 
     if (user !== null) {
-      console.log(user)
       setIsLogged(true);
     }
     else {
@@ -46,11 +45,9 @@ function App() {
             setIsLogged(true);
           })
           .catch((error) => {
-            console.log(error);
             navigate('/login');
           });
       }
-
     }
   }, [navigate]);
 
@@ -59,7 +56,6 @@ function App() {
     localStorage.removeItem('profileData');
     setIsLogged(false);
     navigate('/login');
-    console.log('User logged out successfully');
   }
 
   return (

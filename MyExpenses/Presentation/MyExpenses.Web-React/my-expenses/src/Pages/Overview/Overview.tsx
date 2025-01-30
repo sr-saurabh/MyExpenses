@@ -12,18 +12,23 @@ import UserContext from '../../Context/UserContext.ts';
 import { AccountModel, AccountType } from '../../Models/AccountModel.ts';
 import { AppUser } from '../../Models/AppUser.ts';
 import { Goal, GoalSummary, UpdateGoal } from '../../Models/Goals.ts';
-import { Activity, GoalExpenseSummary, Transaction } from '../../Models/Transactions.tsx';
+import { GoalExpenseSummary, Transaction } from '../../Models/Transactions.tsx';
 import { getAccounts } from '../../Services/accountService.tsx';
 import { getAllCategoryGoals, getGoalsSummary, updateGoal } from '../../Services/categoryService.tsx';
 import { getIconForCategory } from '../../Services/sharedService.tsx';
 import { getAllActivities, getGoalExpenseSummary } from '../../Services/transactionService.tsx';
 import './Overview.css';
+import { Button } from 'primereact/button';
+import { Activity, CreateActivity } from '../../Models/ActivityModel.ts';
+import ActivityForm from '../../Components/PersonalExpenseForm/activityForm.tsx';
+import { addPersonalExpense } from '../../Services/PersonalExpenseService.js';
 
 
 function Overview() {
     const navigate = useNavigate();
     const [appUser, setAppUser] = useState<AppUser | null>(null)
     const [visible, setVisible] = useState<boolean>(false);
+    const [showActivityForm, setShowActivityForm] = useState<boolean>(false);
 
     const [selectedAccount, setSelectedAccount] = useState<AccountModel | null>(null);
     const [accounts, setAccounts] = useState<AccountModel[] | null>(null);
@@ -32,6 +37,9 @@ function Overview() {
     const [transactions, setTransactions] = useState<Activity[] | null>(null);
     const [goalExpenseSummary, setGoalExpenseSummary] = useState<GoalExpenseSummary[] | null>(null);
     const { user, setUser } = useContext(UserContext);
+
+    const [formData, setFormData] = useState<CreateActivity>({} as CreateActivity);
+
 
     const date = new Date();
 
@@ -75,6 +83,16 @@ function Overview() {
                 if (response.status === 200) {
                     setGoalSummary(response.data);
                 }
+            })
+            setFormData({
+                description: '',
+                category: '',
+                date: new Date(),
+                amount: 0,
+                type: 0,
+                appUserId: appUser.id,
+                categoryId: 0,
+                accountId: 0
             })
 
         }
@@ -122,6 +140,22 @@ function Overview() {
     }
     const getIcon = (categoryName: string) => {
         return getIconForCategory(categoryName);
+    }
+
+    const handleFormSubmit = (formData) => {
+        console.log(formData);
+        addPersonalExpense(formData)
+            .then((response) => {
+                setShowActivityForm(false);
+                getAllActivities(appUser.id).then((response) => {
+                    if (response.status === 200) {
+                        setTransactions(response.data);
+                    }
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
     }
 
     const onGoalUpdate = (goal: UpdateGoal) => {
@@ -178,7 +212,7 @@ function Overview() {
                                     <span className='fw-bold'>{selectedAccount?.accountName}</span>
                                 </div>
                                 <div className='d-flex align-items-center gap-1'>
-                                    <span>Rs. {selectedAccount?.balance}</span>
+                                    <span>₹ {selectedAccount?.balance}</span>
                                     <i className="pi pi-arrow-circle-right" style={{ color: '#fff' }}></i>
                                 </div>
                             </div>
@@ -206,23 +240,22 @@ function Overview() {
                 </div>
                 <div className='flex-grow-1'>
                     <div className='d-flex justify-content-between'>
-                        <p className="mb-1 card-header-text">Upcoming bills</p>
-                        <p className="mb-1 cursor-pointer fs-6">
-                            <span>View All</span>
-                            <i className="pi pi-angle-right" style={{ color: '#708090' }}></i>
-                        </p>
+                        <p className="mb-1 card-header-text">Activity</p>
                     </div>
-                    <div className='card flex-column gap-3 h-75'>
-                        <p>{`<add-content>`}</p>
+                    <div className='d-flex justify-content-end'>
+
+                        <Button label="Add Activity" className='rounded-3 px-5 w-100 mt-3  w-max-content' onClick={()=>{setShowActivityForm(true)}} />
                     </div>
+                    {/* <div className='card flex-column gap-3 h-75'>
+                    </div> */}
                 </div>
             </div>
             <div className='row'>
                 <div className='col-3 d-flex flex-column  flex-grow-1 gap-1'>
                     <div className='d-flex justify-content-between align-items-center w-100' >
-                        <p className="mb-1 card-header-text">Recent Transaction</p>
+                        <p className="mb-1 card-header-text">Recent Activity</p>
                         <p className="mb-0 cursor-pointer fs-6">
-                            <span>View All</span>
+                            <span onClick={() => { navigate('/activity'); }}>View All</span>
                             <i className="pi pi-angle-right" style={{ color: '#708090' }}></i>
                         </p>
                     </div>
@@ -260,7 +293,7 @@ function Overview() {
                     </div>
                     <div className='d-flex flex-column gap-2 mt-4'>
                         <div className='d-flex justify-content-between'>
-                            <p className="mb-1 card-header-text">Expenses Breakdown</p>
+                            <p className="mb-0 card-header-text">Expenses Breakdown</p>
                             <span>*Compare to last month</span>
                         </div>
                         <div className='card flex-row row flex-wrap gap-3'>
@@ -271,7 +304,7 @@ function Overview() {
                                         <div>
                                             {/* Render goal expense summary details here */}
                                             <p className='mb-0 text-secondary fw-medium'>{ge.categoryName}</p>
-                                            <p className='mb-0'>Rs. {ge.currentMonthExpense}</p>
+                                            <p className='mb-0'>₹ {ge.currentMonthExpense}</p>
                                             <p className='mb-0 sub-text'>
                                                 {compare(ge.previousMonthExpense, ge.currentMonthExpense)}%*
                                                 <span className={`${compare(ge.previousMonthExpense, ge.currentMonthExpense) < 0 ? 'text-success' : compare(ge.previousMonthExpense, ge.currentMonthExpense) > 0 ? 'text-danger' : 'text-secondary'} ms-2`}>
@@ -290,6 +323,12 @@ function Overview() {
             <Dialog visible={visible} style={{ width: 'clamp(10rem, 50vw, 30rem)' }} draggable={false} onHide={() => { if (!visible) return; setVisible(false); }}>
                 <div className="px-3 pb-3">
                     <TargetForm goals={goals || []} onSubmit={(data) => onGoalUpdate(data.updateGoal)} ></TargetForm>
+                </div>
+            </Dialog>
+            <Dialog header="Add Activity" visible={showActivityForm} style={{ width: 'clamp(10rem, 50vw, 30rem)' }} draggable={false} onHide={() => { if (!showActivityForm) return; setShowActivityForm(false); }}>
+                <div className="px-3 pb-3">
+                    <ActivityForm formData={formData} onSubmit={handleFormSubmit} />
+
                 </div>
             </Dialog>
         </div>

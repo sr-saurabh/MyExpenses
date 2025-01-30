@@ -6,4 +6,10 @@
         public DateOnly StartDay{ get; set; }
         public DateOnly EndDay{ get; set; }
     }
+    
+    public class DailyActivitySummary
+    {
+        public DateTime Date { get; set; }
+        public decimal Total { get; set; }
+    }
 }

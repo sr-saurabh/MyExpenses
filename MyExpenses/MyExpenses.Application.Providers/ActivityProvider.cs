@@ -58,7 +58,7 @@ namespace MyExpenses.Application.Providers
             if (createActivity.Type == TransactionType.Credit)
                 amount = -amount;
 
-            var goal = _goalRepo.Search(c => c.CategoryId == createActivity.CategoryId && c.Year == createActivity.Date.Year && c.Month == createActivity.Date.Month).SingleOrDefault();
+            var goal = _goalRepo.Search(c =>c.AppUserId==activity.AppUserId && c.CategoryId == createActivity.CategoryId && c.Year == createActivity.Date.Year && c.Month == createActivity.Date.Month).SingleOrDefault();
             if (goal == null)
             {
                 goal = new()
@@ -108,7 +108,7 @@ namespace MyExpenses.Application.Providers
         public async Task<List<ApiActivity>> GetActivitiesAsync(int userId)
         {
 
-            var personalExpenses = _activityRepo.Search(pe => pe.AppUserId == userId).Include(a=>a.Transaction).OrderByDescending(a=>a.Transaction.Date).ToList();
+            var personalExpenses = _activityRepo.Search(pe => pe.AppUserId == userId).Include(a => a.Transaction).OrderByDescending(a => a.Transaction.Date).ToList();
             return _mapper.Map<List<ApiActivity>>(personalExpenses);
         }
 
@@ -159,10 +159,10 @@ namespace MyExpenses.Application.Providers
         public async Task<bool> UpdateActivity(UpdateActivity expense)
         {
             var previousExpense = _activityRepo.Search(pe => pe.Id == expense.Id).Include(a => a.Transaction).SingleOrDefault();
-            if(previousExpense == null) 
+            if (previousExpense == null)
                 throw new ArgumentNullException();
 
-                var previousAmount = previousExpense.Transaction.Amount;
+            var previousAmount = previousExpense.Transaction.Amount;
 
             var previousAccount = await _accountRepo.GetByIdAsync((int)previousExpense.Transaction.AccountId);
 
@@ -249,7 +249,7 @@ namespace MyExpenses.Application.Providers
             if (previousExpense.Transaction.TransactionType == TransactionType.Credit)
                 previousAmount = -previousAmount;
 
-            var goal = _goalRepo.Search(c => c.CategoryId == previousExpense.CategoryId && c.Month == previousExpense.Transaction.Date.Month && c.Year == previousExpense.Transaction.Date.Year).SingleOrDefault();
+            var goal = _goalRepo.Search(c => c.CategoryId == previousExpense.CategoryId && c.Month == previousExpense.Transaction.Date.Month && c.Year == previousExpense.Transaction.Date.Year && c.AppUserId== previousExpense.AppUserId).SingleOrDefault();
 
 
             //deleting the transaction
@@ -260,7 +260,7 @@ namespace MyExpenses.Application.Providers
             var accountDetail = await _accountRepo.GetByIdAsync(previousExpense.Transaction.AccountId);
             var isAccountUpdated = await _accountRepo.UpdateBalanceAsync((int)previousExpense.Transaction.AccountId, accountDetail.Balance + previousAmount);
 
-            var transactionDeleted= await _transactionRepo.DeleteAsync(previousExpense.TransactionId);
+            var transactionDeleted = await _transactionRepo.DeleteAsync(previousExpense.TransactionId);
 
             var isDeleted = await _activityRepo.DeleteAsync(activityId);
             return isDeleted != null;
@@ -294,6 +294,52 @@ namespace MyExpenses.Application.Providers
             }
 
             return await _activityRepo.GetWeeklyExpense(appUserId, startDate, endDate);
+        }
+
+        public async Task<List<ApiActivity>> GetExpenseByCategory(int appUserId, string category)
+        {
+            //implement the logic to get the expenses by category
+            DateTime currentDate = DateTime.UtcNow;
+            var x = currentDate.Month;
+            var x1 = currentDate.Year;
+            var result = _activityRepo.Search(a => a.AppUserId == appUserId && a.Category == category && a.Transaction.Date.Month == currentDate.Month && a.Transaction.Date.Year == currentDate.Year && a.Transaction.TransactionType == TransactionType.Debit).Include(a => a.Transaction).ToList();
+
+            return _mapper.Map<List<ApiActivity>>(result);
+
+        }
+
+        public async Task<List<ApiActivityByCategoryKVP>> GetAllExpenseByCategory(int appUserId)
+        {
+            DateTime currentDate = DateTime.UtcNow;
+
+            var result = await _activityRepo
+                .Search(a => a.AppUserId == appUserId
+                             && a.Transaction.Date.Month == currentDate.Month
+                             && a.Transaction.Date.Year == currentDate.Year
+                             && a.Transaction.TransactionType == TransactionType.Debit)
+                .Include(a => a.Transaction)
+                .ToListAsync();  // Fetch data first before grouping
+
+            var groupedData = result
+                .GroupBy(a => a.Category)
+                .Select(group => new ApiActivityByCategoryKVP
+                {
+                    Category = new KeyValuePair<string, List<ApiActivity>>(
+                        group.Key,
+                        _mapper.Map<List<ApiActivity>>(group.ToList()) // Map each group to API model
+                    )
+                }).ToList();
+
+            return groupedData;
+        }
+
+
+        public async Task<List<DailyActivitySummary>> GetDailyActivitySummary(int userId, int month)
+        {
+            var dt= DateTime.UtcNow;
+            var startDate = dt.AddDays(-dt.Day + 1);
+            var endDate = startDate.AddMonths(1).AddDays(-1);
+            return await _activityRepo.GetDailyActivitySummary(userId, startDate, endDate);
         }
     }
 }

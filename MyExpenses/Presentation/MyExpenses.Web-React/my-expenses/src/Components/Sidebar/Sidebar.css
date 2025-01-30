@@ -30,3 +30,6 @@
   position: sticky;
   bottom: 1rem;
 }
+.mw-300{
+  min-width: 300px;
+}

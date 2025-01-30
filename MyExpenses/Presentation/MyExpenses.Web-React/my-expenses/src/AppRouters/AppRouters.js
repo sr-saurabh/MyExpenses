@@ -4,15 +4,15 @@ import Overview from '../Pages/Overview/Overview.tsx';
 import Register from '../Pages/Register/Register';
 import Friends from '../Pages/Friends/Friends';
 import Groups from '../Pages/Groups/Groups';
-import Profile from '../Pages/Profile/Profile';
 import Transactions from '../Pages/Transactions/Transactions.tsx';
 import Balances from '../Pages/balances/balances.tsx';
 import AccountDetails from '../Pages/AccountDetails/AccountDetails.tsx';
 import Expenses from '../Pages/Expenses/Expenses.tsx';
+import Goals from '../Pages/Goals/Goals.tsx';
+import Settings from '../Pages/Settings/Settings.tsx';
 
 const AppRouters = () => {
     return (
-        <div>
             <Routes>
                 <Route path="/"  element={<Overview />} />
                 <Route path="/login" element={<Login />} />
@@ -21,12 +21,12 @@ const AppRouters = () => {
                 <Route path="/balances" element={<Balances />} />
                 <Route path="/balances/account/:accountId" element={<AccountDetails />} />
                 <Route path="/expenses" element={<Expenses />} />
+                <Route path="/goals" element={<Goals />} />
                 <Route path="/friends" element={<Friends />} />
                 <Route path="/groups" element={<Groups />} />
-                <Route path='my-profile' element={<Profile />} />
+                <Route path='/settings' element={<Settings />} />
                 <Route path='activity' element={<Transactions />} />
             </Routes>
-        </div>
     );
 };
 

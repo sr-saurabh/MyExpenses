@@ -1,4 +1,4 @@
-import { get, post } from './HttpProviders';
+import { get, post, put } from './HttpProviders';
 
 export interface registerUserData {
     firstName: string,
@@ -29,4 +29,9 @@ export const getCurrentUserProfile = (forceLoad = false) => {
 
 export const registerUser = (userData: registerUserData) => {
     return post('AppUser', userData);
+}
+
+
+export const updateUser = (userId:number, userData: registerUserData) => {
+    return put(`AppUser/${userId}`, userData);
 }

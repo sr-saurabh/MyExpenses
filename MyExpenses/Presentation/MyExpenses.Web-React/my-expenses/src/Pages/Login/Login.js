@@ -62,10 +62,8 @@ const Login = () => {
                 return;
         }
         if (isSignup) {
-            console.log('Registering User');
             register(formData).then((response) => {
                 const token = response.data.data;
-                console.log(token);
                 localStorage.setItem('token', token);
                 getProfileData();
             }).catch((error) => {
@@ -96,10 +94,6 @@ const Login = () => {
     };
 
     const getProfileData = () => {
-        // if (user != null) {
-        //     navigate('/');
-        //     return;
-        // }
         const profileData = localStorage.getItem('profileData');
         if (profileData == null || profileData === undefined) {
             getCurrentUserProfile(true).then((response) => {
@@ -166,7 +160,7 @@ const Login = () => {
             const token = response.data.data;
             console.log(token);
             localStorage.setItem('token', token);
-            navigate('/overview');
+            getProfileData();
         }).catch((error) => {
             console.log(error);
         }

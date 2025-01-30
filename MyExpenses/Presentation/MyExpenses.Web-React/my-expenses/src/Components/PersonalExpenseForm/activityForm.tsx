@@ -141,7 +141,7 @@ const ActivityForm: FC<ActivityProps> = ({ formData, onSubmit }: ActivityProps) 
     return (
         <div>
             <form className='d-flex flex-column  justify-content-center' onSubmit={handleSubmit}>
-                <div className='mt-4'>
+                <div className=''>
                     <div className='mt-1'>
                         <label htmlFor="currentTargetAmount" className='text-black fw-medium'>Category</label>
                         <Dropdown value={selectedCategory || null} focusOnHover={false} panelClassName='category-dropdown' onChange={(e) => onCategorySelected(e)} options={categories} optionLabel="categoryName"

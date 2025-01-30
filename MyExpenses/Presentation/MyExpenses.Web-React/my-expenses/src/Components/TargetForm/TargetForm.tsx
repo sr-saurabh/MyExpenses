@@ -11,8 +11,8 @@ import UserContext from '../../Context/UserContext.ts';
 interface TargetFormProps {
   amount?: number;
   category?: string;
+  date?:Date;
   goals: Goal[],
-  goalId?: number
   onSubmit: (data: { updateGoal: UpdateGoal }) => void;
 }
 interface Category {
@@ -20,7 +20,7 @@ interface Category {
   id: number;
 }
 
-const TargetForm: FC<TargetFormProps> = ({ amount = 0, category, goals, onSubmit }: TargetFormProps) => {
+const TargetForm: FC<TargetFormProps> = ({ amount = 0, category, goals, date, onSubmit }: TargetFormProps) => {
   const [targetAmount, setTargetAmount] = useState<number>(amount);
   const [currentTargetAmount, setCurrentTargetAmount] = useState<number>(0);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
@@ -36,17 +36,19 @@ const TargetForm: FC<TargetFormProps> = ({ amount = 0, category, goals, onSubmit
     { name: 'Shopping', id: 5 },
     { name: 'Other', id: 6 }
   ];
-  
+
   useEffect(() => {
     const goal = goals.find(g => g.categoryName === category);
     setSelectedGoal(goal ?? null);
+    setTargetAmount(goal?.budget ?? 0);
+    // console.log("logged from target form",goals)
   }, [category]);
 
-  useEffect(() => {
-    const goal = goals.find(g => g.categoryName === selectedCategory?.name);
-    setSelectedGoal(goal ?? null);
-    setTargetAmount(goal?.budget ?? 0);
-  }, [selectedGoal, selectedCategory]);
+  // useEffect(() => {
+  //   const goal = goals.find(g => g.categoryName === selectedCategory?.name);
+  //   console.log(goal)
+  //   setSelectedGoal(goal ?? null);
+  // }, [selectedGoal, selectedCategory]);
 
   const syncCurrentTargetAmount = (amount: number) => {
     setCurrentTargetAmount(amount);
@@ -57,8 +59,8 @@ const TargetForm: FC<TargetFormProps> = ({ amount = 0, category, goals, onSubmit
       userId: user.id,
       id: selectedGoal?.id ?? 0,
       budget: currentTargetAmount,
-      month: 0,
-      year: 0,
+      month: (date ? date.getMonth() + 1 : new Date().getMonth() + 1),
+      year: (date ? date.getFullYear() : new Date().getFullYear()),
       categoryId: selectedCategory?.id ?? 6
     };
     onSubmit({ updateGoal: updatedGoal });
@@ -85,7 +87,7 @@ const TargetForm: FC<TargetFormProps> = ({ amount = 0, category, goals, onSubmit
       <div className='mb-3 mt-2'>
         <div className="flex flex-column gap-2">
           <label htmlFor="target" className='text-black fw-medium'>Target Amount</label>
-          <InputNumber id="target" className='w-100' value={targetAmount} prefix="Rs. " disabled={true} />
+          <InputNumber id="target" className='w-100' value={targetAmount} prefix="₹ " disabled={true} />
         </div>
       </div>
       <div className='mb-3 mt-2'>

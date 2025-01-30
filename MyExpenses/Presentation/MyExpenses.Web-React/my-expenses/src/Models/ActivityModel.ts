@@ -10,6 +10,13 @@ export interface Activity {
     transactionType: TransactionType,
     accountId: number
 }
+
+export interface ActivityByCategory{
+    category:{
+        key:string,
+        value: Activity[]
+    }
+}
 export interface CreateActivity {
     category: string,
     description: string,

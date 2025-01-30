@@ -141,5 +141,31 @@ namespace MyExpenses.Infrastructure.Postgres.Repositories
                 EndDay = DateOnly.FromDateTime(endDate)
             };
         }
+
+
+
+        public async Task<List<DailyActivitySummary>> GetDailyActivitySummary(int userId, DateTime startDate, DateTime endDate)
+        {
+            var filteredTransactions = _dbContext.Activities.Include(a => a.Transaction)
+                .Where(t => t.AppUserId == userId
+                            && t.Transaction.Date >= startDate
+                            && t.Transaction.Date <= endDate
+                            && t.Transaction.TransactionType == TransactionType.Debit)
+
+                .ToList();
+
+            var dailyTotals = filteredTransactions
+                                .GroupBy(t => t.Transaction.Date.Date)
+                                .OrderBy(g => g.Key) // Ensure days are sorted by actual date
+                                .Select(g => new DailyActivitySummary
+                                {
+                                    Date = g.Key,
+                                    Total = g.Sum(t => t.Transaction.Amount)
+                                })
+                                .ToList();
+
+            return dailyTotals;
+        }
+
     }
 }

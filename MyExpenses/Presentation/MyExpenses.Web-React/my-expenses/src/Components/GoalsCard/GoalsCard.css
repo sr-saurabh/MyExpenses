@@ -1,0 +1,18 @@
+.card-head{
+    height: 44px;
+}
+.card{
+    padding: 20px 24px;
+}
+
+
+.month-dropdown-container .p-calender .p-inputtext{
+    width: 10rem !important;
+}
+
+.month-picker-input{
+    width: 10rem;
+}
+.p-datepicker .p-monthpicker .p-monthpicker-month.p-highlight {
+    color: #fff;
+}

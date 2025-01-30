@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyExpenses.Application.Abstraction;
 using MyExpenses.Domain.core.Models.Expense;
@@ -127,10 +128,52 @@ namespace MyExpenses.API.Controllers
         /// <returns></returns>
 
         [HttpGet("weekly-summary/{appUserId}")]
+        [Authorize]
         public async Task<IActionResult> GetWeeklySummary(int appUserId, bool isCurrentWeek)
         {
             var res = await _activityContract.GetWeeklyActivity(appUserId, isCurrentWeek);
             return Ok(res);
+        }
+        /// <summary>
+        /// Fetch all the expenses for a month for a particular category
+        /// </summary>
+        /// <param name="appUserId"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        [HttpGet("expense-by-category/{category}/user/{appUserId}")]
+        [Authorize]
+        public async Task<IActionResult> GetExpenseByCategory(int appUserId, string category)
+        {
+           var response = await _activityContract.GetExpenseByCategory(appUserId, category);
+            return Ok(response);
+        }
+        
+        /// <summary>
+        /// Fetch all the expenses for a month for a particular category
+        /// </summary>
+        /// <param name="appUserId"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        [HttpGet("all-expense-by-category/user/{appUserId}")]
+        [Authorize]
+        public async Task<IActionResult> GetExpenseByCategory(int appUserId)
+        {
+            var response = await _activityContract.GetAllExpenseByCategory(appUserId);
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Fetch all the expenses for a month
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        [HttpGet("daily-activity-summary/{userId}/month/{month}")]
+        [Authorize]
+        public async Task<IActionResult> GetDailyActivitySummary(int userId, int month)
+        {
+            var response = await _activityContract.GetDailyActivitySummary(userId, month);
+            return Ok(response);
         }
     }
 }

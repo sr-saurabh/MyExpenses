@@ -72,5 +72,29 @@ namespace MyExpenses.Application.Abstraction
         /// <param name="appUserId"></param>
         /// <returns> Return the weekly expense</returns>
         Task<WeeklyExpense> GetWeeklyActivity(int appUserId, bool isCurrent);
+
+        /// <summary>
+        /// Get the list of Expenses by category name
+        /// </summary>
+        /// <param name="appUserId"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        Task<List<ApiActivity>> GetExpenseByCategory(int appUserId, string category);
+
+
+        /// <summary>
+        /// Get the list of Expenses by category name
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="month"></param>
+        /// <returns></returns>
+        Task<List<DailyActivitySummary>> GetDailyActivitySummary(int userId, int month);
+
+        /// <summary>
+        /// Get the list of Expenses by category name
+        /// </summary>
+        /// <param name="appUserId"></param>
+        /// <returns></returns>
+        Task<List<ApiActivityByCategoryKVP>> GetAllExpenseByCategory(int appUserId);
     }
 }

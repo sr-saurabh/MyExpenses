@@ -1,8 +1,10 @@
 import moment from 'moment';
 import { Badge } from 'primereact/badge';
 import { InputText } from "primereact/inputtext";
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './TopNav.css';
+import UserContext from '../../Context/UserContext.ts';
+
         
 
 interface TopNavProps {
@@ -14,11 +16,20 @@ const TopNav: React.FC<TopNavProps> = (props) => {
     const today = new Date().toLocaleDateString();
     const [searchValue, setSearchValue] = useState('');
     const [name, setName] = useState('');
+    const { user, setUser } = useContext(UserContext);
+
 
     useEffect(() => {
         const firstName = props?.name.split(' ')[0];
         setName(firstName);
     }, [props.name]);
+    
+        useEffect(() => {
+            if (user) {
+                setName(user.firstName);
+            }
+        }, [user]);
+    
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log(e);
         setSearchValue(e.target.value)

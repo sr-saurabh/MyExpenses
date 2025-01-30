@@ -78,7 +78,7 @@ const AccountDetails = () => {
           <div className='d-flex flex-column justify-content-between account-details-container flex-grow-1 gap-3'>
             <div>
               <p className="subtext mb-0">Balance</p>
-              <span className="text-highlight">Rs. {accountDetails?.balance}</span>
+              <span className="text-highlight">₹ {accountDetails?.balance}</span>
             </div>
           </div>
         </div>

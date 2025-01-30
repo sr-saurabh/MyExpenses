@@ -63,3 +63,18 @@ ul {
   font-weight: 600;
   color: var(--default-black);
 }
+.h-max-content{
+  height: max-content;
+}
+.h-min-content{
+  height: min-content;
+}
+.w-max-content{
+  width: max-content;
+}
+.w-min-content{
+  width: min-content;
+}
+.item-raised{
+  box-shadow: 0px 20px 25px 0px #4C67641A;
+}

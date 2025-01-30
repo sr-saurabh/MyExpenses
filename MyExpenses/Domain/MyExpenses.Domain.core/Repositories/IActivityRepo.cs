@@ -27,5 +27,6 @@ namespace MyExpenses.Domain.core.Repositories
         /// <returns>A PersonalExpenseSummary object containing summarized expense data.</returns>
         Task<ActivitySummary> GetPersonalExpenseSummary(int userId);
         Task<WeeklyExpense> GetWeeklyExpense(int userId, DateTime startDate, DateTime endDate);
+        Task<List<DailyActivitySummary>> GetDailyActivitySummary(int userId, DateTime startDate, DateTime endDate);
     }
 }
