@@ -27,8 +27,6 @@ namespace MyExpenses.Application.Providers
             _accountRepo = accountRepo;
             _transactionRepo = transactionRepo;
         }
-
-
         /// <summary>
         /// Create the personal expense 
         /// </summary>
