@@ -7,12 +7,13 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyExpenses.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initialMigration : Migration
+    public partial class updatedAccount : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+
                 name: "AspNetRoles",
                 columns: table => new
                 {
@@ -33,6 +34,7 @@ namespace MyExpenses.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ActivityStatus = table.Column<int>(type: "integer", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsGoogleLoggedIn = table.Column<bool>(type: "boolean", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -51,6 +53,26 @@ namespace MyExpenses.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CategoryName = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatusChangedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ActivityStatusChangedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatus = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -73,6 +95,31 @@ namespace MyExpenses.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UserGroups", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserInvitation",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    InviterProfileId = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: true),
+                    Phone = table.Column<string>(type: "text", nullable: true),
+                    InvitationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    InvitationResponse = table.Column<string>(type: "text", nullable: false, defaultValue: "Pending"),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatusChangedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ActivityStatusChangedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatus = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserInvitation", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -103,14 +150,12 @@ namespace MyExpenses.Infrastructure.Migrations
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     UserId = table.Column<Guid>(type: "uuid", nullable: false),
-                    UserIdentityId = table.Column<Guid>(type: "uuid", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
-                    FullName = table.Column<string>(type: "text", nullable: false),
-                    Avatar = table.Column<string>(type: "text", nullable: false),
+                    FullName = table.Column<string>(type: "text", nullable: true),
+                    Avatar = table.Column<string>(type: "text", nullable: true),
                     Email = table.Column<string>(type: "text", nullable: false),
                     PhoneNumber = table.Column<string>(type: "text", nullable: false),
-                    MonthlyBudget = table.Column<double>(type: "double precision", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
@@ -123,8 +168,8 @@ namespace MyExpenses.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_AppUsers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AppUsers_AspNetUsers_UserIdentityId",
-                        column: x => x.UserIdentityId,
+                        name: "FK_AppUsers_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -216,15 +261,77 @@ namespace MyExpenses.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Accounts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AppUserId = table.Column<int>(type: "integer", nullable: false),
+                    AccountName = table.Column<string>(type: "text", nullable: false),
+                    AccountNumber = table.Column<string>(type: "text", nullable: false),
+                    BranchName = table.Column<string>(type: "text", nullable: false),
+                    IFSC = table.Column<string>(type: "text", nullable: false),
+                    AccountType = table.Column<int>(type: "integer", nullable: false),
+                    Balance = table.Column<decimal>(type: "numeric", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatusChangedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ActivityStatusChangedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatus = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Accounts_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Activities",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    AppUserId = table.Column<int>(type: "integer", nullable: false),
+                    TransactionId = table.Column<int>(type: "integer", nullable: false),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
+                    Category = table.Column<string>(type: "text", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatusChangedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ActivityStatusChangedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatus = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Activities", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Activities_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Contacts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FromUserId = table.Column<int>(type: "integer", nullable: false),
                     ToUserId = table.Column<int>(type: "integer", nullable: false),
-                    InvitationDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    InvitationResponse = table.Column<int>(type: "integer", nullable: false),
+                    FromUserId = table.Column<int>(type: "integer", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
+                    Balance = table.Column<decimal>(type: "numeric", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
@@ -237,6 +344,12 @@ namespace MyExpenses.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Contacts", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Contacts_AppUsers_FromUserId",
+                        column: x => x.FromUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Contacts_AppUsers_ToUserId",
                         column: x => x.ToUserId,
                         principalTable: "AppUsers",
@@ -245,22 +358,17 @@ namespace MyExpenses.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExpenseBaseEntity",
+                name: "Goals",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Description = table.Column<string>(type: "text", nullable: false),
-                    Category = table.Column<string>(type: "text", nullable: false),
-                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
-                    Discriminator = table.Column<string>(type: "character varying(21)", maxLength: 21, nullable: false),
-                    GroupId = table.Column<int>(type: "integer", nullable: true),
-                    PayerId = table.Column<int>(type: "integer", nullable: true),
-                    Type = table.Column<int>(type: "integer", nullable: true),
-                    AppUserId = table.Column<int>(type: "integer", nullable: true),
-                    FromUserId = table.Column<int>(type: "integer", nullable: true),
-                    ToUserId = table.Column<int>(type: "integer", nullable: true),
+                    AppUserId = table.Column<int>(type: "integer", nullable: false),
+                    CategoryId = table.Column<int>(type: "integer", nullable: false),
+                    Year = table.Column<int>(type: "integer", nullable: false),
+                    Month = table.Column<int>(type: "integer", nullable: false),
+                    Budget = table.Column<decimal>(type: "numeric", nullable: true),
+                    TotalSpent = table.Column<decimal>(type: "numeric", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
@@ -271,33 +379,52 @@ namespace MyExpenses.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExpenseBaseEntity", x => x.Id);
+                    table.PrimaryKey("PK_Goals", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExpenseBaseEntity_AppUsers_AppUserId",
+                        name: "FK_Goals_AppUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AppUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ExpenseBaseEntity_AppUsers_FromUserId",
-                        column: x => x.FromUserId,
-                        principalTable: "AppUsers",
+                        name: "FK_Goals_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupExpenses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Category = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    GroupId = table.Column<int>(type: "integer", nullable: false),
+                    PayerId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatusChangedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ActivityStatusChangedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatus = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupExpenses", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ExpenseBaseEntity_AppUsers_PayerId",
+                        name: "FK_GroupExpenses_AppUsers_PayerId",
                         column: x => x.PayerId,
                         principalTable: "AppUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ExpenseBaseEntity_AppUsers_ToUserId",
-                        column: x => x.ToUserId,
-                        principalTable: "AppUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ExpenseBaseEntity_UserGroups_GroupId",
+                        name: "FK_GroupExpenses_UserGroups_GroupId",
                         column: x => x.GroupId,
                         principalTable: "UserGroups",
                         principalColumn: "Id",
@@ -315,6 +442,7 @@ namespace MyExpenses.Infrastructure.Migrations
                     Amount = table.Column<decimal>(type: "numeric", nullable: false),
                     Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     GroupId = table.Column<int>(type: "integer", nullable: true),
+                    Description = table.Column<string>(type: "text", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
@@ -344,6 +472,43 @@ namespace MyExpenses.Infrastructure.Migrations
                         column: x => x.GroupId,
                         principalTable: "UserGroups",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserExpenses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Description = table.Column<string>(type: "text", nullable: false),
+                    Category = table.Column<string>(type: "text", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    FromUserId = table.Column<int>(type: "integer", nullable: false),
+                    ToUserId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatusChangedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ActivityStatusChangedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatus = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserExpenses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserExpenses_AppUsers_FromUserId",
+                        column: x => x.FromUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserExpenses_AppUsers_ToUserId",
+                        column: x => x.ToUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -380,6 +545,41 @@ namespace MyExpenses.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Transactions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ActivityId = table.Column<int>(type: "integer", nullable: true),
+                    AccountId = table.Column<int>(type: "integer", nullable: false),
+                    Amount = table.Column<decimal>(type: "numeric", nullable: false),
+                    TransactionType = table.Column<int>(type: "integer", nullable: false),
+                    Date = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedBy = table.Column<Guid>(type: "uuid", nullable: false),
+                    UpdatedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatusChangedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ActivityStatusChangedBy = table.Column<Guid>(type: "uuid", nullable: true),
+                    ActivityStatus = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Transactions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Transactions_Activities_ActivityId",
+                        column: x => x.ActivityId,
+                        principalTable: "Activities",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GroupExpenseShares",
                 columns: table => new
                 {
@@ -412,17 +612,28 @@ namespace MyExpenses.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_GroupExpenseShares_ExpenseBaseEntity_GroupExpenseId",
+                        name: "FK_GroupExpenseShares_GroupExpenses_GroupExpenseId",
                         column: x => x.GroupExpenseId,
-                        principalTable: "ExpenseBaseEntity",
+                        principalTable: "GroupExpenses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppUsers_UserIdentityId",
+                name: "IX_Accounts_AppUserId",
+                table: "Accounts",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Activities_AppUserId",
+                table: "Activities",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUsers_UserId",
                 table: "AppUsers",
-                column: "UserIdentityId");
+                column: "UserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -456,10 +667,20 @@ namespace MyExpenses.Infrastructure.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_ActivityStatus",
+                table: "AspNetUsers",
+                column: "ActivityStatus");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Contacts_FromUserId",
+                table: "Contacts",
+                column: "FromUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contacts_ToUserId",
@@ -467,29 +688,24 @@ namespace MyExpenses.Infrastructure.Migrations
                 column: "ToUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExpenseBaseEntity_AppUserId",
-                table: "ExpenseBaseEntity",
+                name: "IX_Goals_AppUserId",
+                table: "Goals",
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExpenseBaseEntity_FromUserId",
-                table: "ExpenseBaseEntity",
-                column: "FromUserId");
+                name: "IX_Goals_CategoryId",
+                table: "Goals",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExpenseBaseEntity_GroupId",
-                table: "ExpenseBaseEntity",
+                name: "IX_GroupExpenses_GroupId",
+                table: "GroupExpenses",
                 column: "GroupId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ExpenseBaseEntity_PayerId",
-                table: "ExpenseBaseEntity",
+                name: "IX_GroupExpenses_PayerId",
+                table: "GroupExpenses",
                 column: "PayerId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ExpenseBaseEntity_ToUserId",
-                table: "ExpenseBaseEntity",
-                column: "ToUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupExpenseShares_AppUserId",
@@ -519,6 +735,27 @@ namespace MyExpenses.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Settlements_ToUserId",
                 table: "Settlements",
+                column: "ToUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_AccountId",
+                table: "Transactions",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_ActivityId",
+                table: "Transactions",
+                column: "ActivityId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserExpenses_FromUserId",
+                table: "UserExpenses",
+                column: "FromUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserExpenses_ToUserId",
+                table: "UserExpenses",
                 column: "ToUserId");
 
             migrationBuilder.CreateIndex(
@@ -554,25 +791,46 @@ namespace MyExpenses.Infrastructure.Migrations
                 name: "Contacts");
 
             migrationBuilder.DropTable(
+                name: "Goals");
+
+            migrationBuilder.DropTable(
                 name: "GroupExpenseShares");
 
             migrationBuilder.DropTable(
                 name: "Settlements");
 
             migrationBuilder.DropTable(
+                name: "Transactions");
+
+            migrationBuilder.DropTable(
+                name: "UserExpenses");
+
+            migrationBuilder.DropTable(
                 name: "UserGroupMemberships");
+
+            migrationBuilder.DropTable(
+                name: "UserInvitation");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "ExpenseBaseEntity");
+                name: "Categories");
 
             migrationBuilder.DropTable(
-                name: "AppUsers");
+                name: "GroupExpenses");
+
+            migrationBuilder.DropTable(
+                name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "Activities");
 
             migrationBuilder.DropTable(
                 name: "UserGroups");
+
+            migrationBuilder.DropTable(
+                name: "AppUsers");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import ComponentWrapper from '../../Components/Content-Wrapper/ContentWrapper.tsx'; // Adjust the import path as necessary
 import GoalsCard from '../../Components/GoalsCard/GoalsCard.tsx';
 import Statistics from '../../Components/statistics/statistics.tsx';
-import TargetForm from '../../Components/TargetForm/TargetForm.tsx';
+import TargetForm, { Category } from '../../Components/TargetForm/TargetForm.tsx';
 import UserContext from '../../Context/UserContext.ts';
 import { AccountModel, AccountType } from '../../Models/AccountModel.ts';
 import { AppUser } from '../../Models/AppUser.ts';
@@ -21,7 +21,7 @@ import './Overview.css';
 import { Button } from 'primereact/button';
 import { Activity, CreateActivity } from '../../Models/ActivityModel.ts';
 import ActivityForm from '../../Components/PersonalExpenseForm/activityForm.tsx';
-import { addPersonalExpense } from '../../Services/PersonalExpenseService.js';
+import { addPersonalExpense, getCategories } from '../../Services/PersonalExpenseService.js';
 
 
 function Overview() {
@@ -37,6 +37,7 @@ function Overview() {
     const [transactions, setTransactions] = useState<Activity[] | null>(null);
     const [goalExpenseSummary, setGoalExpenseSummary] = useState<GoalExpenseSummary[] | null>(null);
     const { user, setUser } = useContext(UserContext);
+    const [categories, setCategories] = useState<Category[]>([]);
 
     const [formData, setFormData] = useState<CreateActivity>({} as CreateActivity);
 
@@ -188,6 +189,18 @@ function Overview() {
     const redirectToBalances = () => {
         navigate('/balances');
     }
+
+    const showGoalForm = () => {
+        if (categories.length === 0) {
+            getCategories().then((response) => {
+                if (response.status === 200) {
+                    setCategories(response.data);
+                    setVisible(true);
+                }
+
+            })
+        }
+    }
     return (
         <div className='d-flex flex-column gap-4'>
             <div className='d-flex gap-4'>
@@ -236,7 +249,7 @@ function Overview() {
                 </div>
                 <div className='flex-grow-1'>
                     <p className="mb-1 card-header-text">Goals</p>
-                    <GoalsCard target={goalSummary?.budget ?? 0} achieved={goalSummary?.targetSpent ?? 0} onUpdate={() => setVisible(true)} ></GoalsCard>
+                    <GoalsCard target={goalSummary?.budget ?? 0} achieved={goalSummary?.targetSpent ?? 0} onUpdate={() => showGoalForm()} ></GoalsCard>
                 </div>
                 <div className='flex-grow-1'>
                     <div className='d-flex justify-content-between'>
@@ -244,7 +257,7 @@ function Overview() {
                     </div>
                     <div className='d-flex justify-content-end'>
 
-                        <Button label="Add Activity" className='rounded-3 px-5 w-100 mt-3  w-max-content' onClick={()=>{setShowActivityForm(true)}} />
+                        <Button label="Add Activity" className='rounded-3 px-5 w-100 mt-3  w-max-content' onClick={() => { setShowActivityForm(true) }} />
                     </div>
                     {/* <div className='card flex-column gap-3 h-75'>
                     </div> */}
@@ -322,7 +335,7 @@ function Overview() {
 
             <Dialog visible={visible} style={{ width: 'clamp(10rem, 50vw, 30rem)' }} draggable={false} onHide={() => { if (!visible) return; setVisible(false); }}>
                 <div className="px-3 pb-3">
-                    <TargetForm goals={goals || []} onSubmit={(data) => onGoalUpdate(data.updateGoal)} ></TargetForm>
+                    <TargetForm goals={goals || []} categories={categories} onSubmit={(data) => onGoalUpdate(data.updateGoal)} ></TargetForm>
                 </div>
             </Dialog>
             <Dialog header="Add Activity" visible={showActivityForm} style={{ width: 'clamp(10rem, 50vw, 30rem)' }} draggable={false} onHide={() => { if (!showActivityForm) return; setShowActivityForm(false); }}>

@@ -55,5 +55,16 @@ namespace MyExpenses.Application.Providers
             var categories = await _categoryRepo.GetAllAsync();
             return _mapper.Map<List<ApiCategory>>(categories);
         }
+
+        
+        public async Task<bool> CreateCategory(string categoryName)
+        {
+            Category newCategory = new Category()
+            {
+                CategoryName = categoryName
+            };
+            var res = await _categoryRepo.CreateAsync(newCategory);
+            return res != null;
+        }
     }
 }

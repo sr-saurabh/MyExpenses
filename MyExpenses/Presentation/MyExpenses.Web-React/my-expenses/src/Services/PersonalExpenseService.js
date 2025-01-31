@@ -4,8 +4,8 @@ export const addPersonalExpense = (expenseData) => {
     return post('Activity', expenseData);
 };
 
-export const getCategories = (appUserId) => {
-    return get(`Activity/categories/${appUserId}`);
+export const getCategories = () => {
+    return get(`Category`);
 };
 
 export const getPersonalExpenses = (appUserId) => {

@@ -10,32 +10,22 @@ import UserContext from '../../Context/UserContext.ts';
 
 interface TargetFormProps {
   amount?: number;
+  categories:Category[];
   category?: string;
   date?:Date;
   goals: Goal[],
   onSubmit: (data: { updateGoal: UpdateGoal }) => void;
-}
-interface Category {
-  name: string;
+}export interface Category {
+  categoryName: string;
   id: number;
 }
 
-const TargetForm: FC<TargetFormProps> = ({ amount = 0, category, goals, date, onSubmit }: TargetFormProps) => {
+const TargetForm: FC<TargetFormProps> = ({ amount = 0, category, goals, date, categories, onSubmit }: TargetFormProps) => {
   const [targetAmount, setTargetAmount] = useState<number>(amount);
   const [currentTargetAmount, setCurrentTargetAmount] = useState<number>(0);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [selectedGoal, setSelectedGoal] = useState<Goal | null>(null);
   const { user } = useContext(UserContext);
-
-
-  const categories: Category[] = [
-    { name: 'Transportation', id: 1 },
-    { name: 'Entertainment', id: 2 },
-    { name: 'Housing', id: 3 },
-    { name: 'Food', id: 4 },
-    { name: 'Shopping', id: 5 },
-    { name: 'Other', id: 6 }
-  ];
 
   useEffect(() => {
     const goal = goals.find(g => g.categoryName === category);
@@ -79,7 +69,7 @@ const TargetForm: FC<TargetFormProps> = ({ amount = 0, category, goals, date, on
         ) : (
           <div className='mb-3 mt-2 '>
             <label htmlFor="currentTargetAmount" className='text-black fw-medium'>Category</label>
-            <Dropdown value={selectedCategory} focusOnHover={false} panelClassName='category-dropdown' onChange={(e: DropdownChangeEvent) => setSelectedCategory(e.value)} options={categories} optionLabel="name"
+            <Dropdown value={selectedCategory} focusOnHover={false} panelClassName='category-dropdown' onChange={(e: DropdownChangeEvent) => setSelectedCategory(e.value)} options={categories} optionLabel="categoryName"
               placeholder="Select a Category" className="w-100 md:w-14rem" />
           </div>
         )

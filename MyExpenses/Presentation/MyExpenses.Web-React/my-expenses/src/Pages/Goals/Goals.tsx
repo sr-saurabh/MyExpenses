@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import GoalsCard from '../../Components/GoalsCard/GoalsCard.tsx';
 import { Goal, GoalSummary, UpdateGoal } from '../../Models/Goals.tsx';
-import TargetForm from '../../Components/TargetForm/TargetForm.tsx';
+import TargetForm, { Category } from '../../Components/TargetForm/TargetForm.tsx';
 import { AppUser } from '../../Models/AppUser.ts';
 import { getAllCategoryGoals, getGoalsSummary, updateGoal } from '../../Services/categoryService.tsx';
 import { Dialog } from 'primereact/dialog';
@@ -11,6 +11,7 @@ import { Chart } from 'primereact/chart';
 import { Button } from 'primereact/button';
 import { getIconForCategory } from '../../Services/sharedService.tsx';
 import ComponentWrapper from '../../Components/Content-Wrapper/ContentWrapper.tsx';
+import { getCategories } from '../../Services/PersonalExpenseService.js';
 
 
 const Goals = () => {
@@ -25,6 +26,7 @@ const Goals = () => {
     const [categoryBudgetList, setCategoryBudgetList] = useState<CategoryBudget[]>([]);
 
     const [dailyExpenseSummary, setDailyExpenseSummary] = useState<DailyActivitySummary[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
 
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
@@ -205,10 +207,19 @@ const Goals = () => {
         return getIconForCategory(categoryName);
     }
 
-    const showGoalForm = (categoryName?: string, isCurrentMonth:boolean=false) => {
+    const showGoalForm = (categoryName?: string, isCurrentMonth: boolean = false) => {
+        if (categories.length === 0) {
+            getCategories().then((response) => {
+                if (response.status === 200) {
+                    setCategories(response.data);
+                    setVisible(true);
+                }
+
+            })
+        }
         setSelectedCategory(categoryName);
         setVisible(true);
-        if(isCurrentMonth)
+        if (isCurrentMonth)
             setSelectedDate(date)
         else
             setSelectedDate(selectedDateFromGoals);
@@ -243,6 +254,7 @@ const Goals = () => {
             })
         }
     }
+
     return (
         <div>
             <div className='d-flex flex-column gap-2'>
@@ -276,7 +288,7 @@ const Goals = () => {
             </div>
             <Dialog visible={visible} style={{ width: 'clamp(10rem, 50vw, 30rem)' }} header="Update Goal" draggable={false} onHide={() => { if (!visible) return; setVisible(false); }}>
                 <div className="px-3 pb-3">
-                    <TargetForm goals={goals || []} category={selectedCategory} date={selectedDate} onSubmit={(data) => onGoalUpdate(data.updateGoal)}></TargetForm>
+                    <TargetForm goals={goals || []} categories={categories} category={selectedCategory} date={selectedDate} onSubmit={(data) => onGoalUpdate(data.updateGoal)}></TargetForm>
                 </div>
             </Dialog>
         </div>

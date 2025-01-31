@@ -20,7 +20,7 @@ namespace MyExpenses.Infrastructure.Postgres.ModelCreationHooks
             
             modelBuilder.Entity<Transaction>()
                         .HasOne(pe=>pe.Account)
-                        .WithMany(p=>p.PersonalExpenses)
+                        .WithMany(p=>p.Transactions)
                         .HasForeignKey(pe => pe.AccountId);
 
 

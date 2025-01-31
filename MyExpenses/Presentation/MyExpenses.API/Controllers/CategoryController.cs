@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MyExpenses.Application.Abstraction;
 using MyExpenses.Domain.core.Models.Category;
 
@@ -20,6 +21,14 @@ namespace MyExpenses.API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var res = await _categoryContract.GetAllCategory();
+            return Ok(res);
+        }
+        
+        [HttpPost("${category}")]
+        [Authorize]
+        public async Task<IActionResult> CreateCategory(string category)
+        {
+            var res = await _categoryContract.CreateCategory(category);
             return Ok(res);
         }
 

@@ -17,6 +17,6 @@ namespace MyExpenses.Domain.core.Entities.Common
 
         public AppUser AppUser { get; set; }
 
-        public ICollection<Transaction>? PersonalExpenses { get; set; }
+        public ICollection<Transaction>? Transactions { get; set; }
     }
 }

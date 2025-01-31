@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MyExpenses.Infrastructure.Migrations
 {
     [DbContext(typeof(MyExpensesDbContext))]
-    [Migration("20250123062609_addedRelationShipWithIdentity_2")]
-    partial class addedRelationShipWithIdentity_2
+    [Migration("20250131062131_updatedAccount")]
+    partial class updatedAccount
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -1121,7 +1121,7 @@ namespace MyExpenses.Infrastructure.Migrations
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.Transaction", b =>
                 {
                     b.HasOne("MyExpenses.Domain.core.Entities.Common.Account", "Account")
-                        .WithMany("PersonalExpenses")
+                        .WithMany("Transactions")
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1230,7 +1230,7 @@ namespace MyExpenses.Infrastructure.Migrations
 
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Common.Account", b =>
                 {
-                    b.Navigation("PersonalExpenses");
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("MyExpenses.Domain.core.Entities.Expenses.Activity", b =>
